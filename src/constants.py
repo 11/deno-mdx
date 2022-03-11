@@ -9,7 +9,7 @@
 #
 #     # paragraph and styled text
 #     'paragraph': 'paragraph',
-#     'text': 'text',
+#     'text': '
 #     'code': 'code',
 #     'bold': 'bold',
 #     'link': 'link',
