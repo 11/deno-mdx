@@ -12,37 +12,28 @@ Decoration = namedtuple('Decoration', ['idx', 'char'])
 
 
 class Markdown:
-    def __init__(self, filename):
-        self._filename = filename
+    def __init__(self, filepath):
+        self._filepath = filepath
+        self._filename = filepath.name
         self._lineno = 0
-
-        # output JSON
-        self._output = {
-            'file': filename,
-            'content': [],
-        }
 
     def __repr__(self):
         return f'File {self._filename} - Lines processed {self._lineno}'
 
     def __str__(self):
-        return pformat(self._output)
+        return pformat(self.parse())
 
-    def dump(self):
-        return json.dump(self._output)
-
-    def dumps(self):
-        return json.dumps(self._output)
-
-    def parse(self):
+    def __next__(self):
         reader = utils.read_file(self._filename)
         while (line := next(reader, None)):
             if re.match(tks['header'], line):
                 header = self._parse_header(line)
-                self._append(header)
+                yield header
+                # self._append(header)
             elif re.match(tks['blockquote'], line):
                 blockquote = self._parse_blockquote(line)
-                self._append(blockquote)
+                yield blockquote
+                # self._append(blockquote)
             elif re.match(tks['image'], line):
                 print('image')
             elif re.match(tks['ordered_list'], line):
@@ -54,10 +45,22 @@ class Markdown:
             else:
                 print('paragraph')
 
+            self._lineno += 1
+
         return self._output
 
-    def _append(self, val):
-        self._output['content'].append(val)
+    def dump(self):
+        return json.dump(self.parse())
+
+    def dumps(self):
+        return json.dumps(self.parse())
+
+    def parse(self):
+        return {
+            'filename': self._filepath.name,
+            'filepath': self._filepath
+            'content': [token for token in self],
+        }
 
     def _parse_header(self, line):
         match = re.findall(tks['header'], line)
@@ -75,9 +78,9 @@ class Markdown:
 
     def _parse_blockquote(self, line):
         match = re.findall(tks['blockquote'], line)
-        if len(meatch) > 1:
+        if len(match) > 1:
             raise ParsingException(self._file, self._lineno, '')
-        elif len(meatch) < 1:
+        elif len(match) < 1:
             raise ParsingException(self._file, self._lineno, '')
 
         blockquote, content = match[0]
@@ -90,17 +93,17 @@ class Markdown:
     def _parse_image(self, line):
         pass
 
-    def _parse_codeblock(self, line):
+    def _parse_codeblock(self, line, reader):
         match = re.findall(tks['codeblock'], line)
-        if len(meatch) > 1:
+        if len(match) > 1:
             raise ParsingException(self._file, self._lineno, '')
-        elif len(meatch) < 1:
+        elif len(match) < 1:
             raise ParsingException(self._file, self._lineno, '')
 
-        blockquote, content = match[0]
+        codeblock, content = match[0]
         return {
-            'token': 'blockquote',
-            'tag': 'blockquote',
+            'token': 'codeblock',
+            'tag': 'pre',
             'content': content,
         }
 
@@ -109,40 +112,41 @@ class Markdown:
     def _parse_link(self, line, seek=0):
         pass
 
-    def _parse_text(self, line):
-        decor_stack = []
-        decor_tokens = set(
-            '*', # bold
-            '_', # underline
-            '~', # strikethrough
-            '/', # italics
-            '`', # code
-            '[', # link
-        )
+    def _parse_decoration(self, line, seek=0):
+        pass
 
-        result = {
+    def _parse_text(self, line):
+        output = {
             'element': 'paragraph',
             'tag': 'p',
             'content': [],
         }
 
-        idx = 0
-        while idx < len(line):
-            char = line[idx]
-            if char in decor_tokens:
-                # if char == decor_stack[-1].char
-                #     decor = decor_stack.pop()
-                #     result['content'].append()
+        decor_tks = set('*', '_', '~', '/', '`', '[')
 
-                if char == '[':
-                    # TODO: figure out how to jump idx
-                    # TODO: figure out how to append result
-                    # self._parse_link(line, idx)
-                    pass
+        start = 0
+        end = 0
+        while end < len(line):
+            cur = line[idx]
+            prev = line[idx-1] if idx > 0 else 0
+
+            if prev != '\\' and cur in decor_tks:
+                # store plain text
+                output['contnet'].append({
+                    'element': 'text',
+                    'content': line[start:end]
+                })
+                start = end
+
+                # parse text decoration or link
+                if cur == '[':
+                    link = self._parse_link(self, line, idx)
+                    output['content'].append(link)
                 else:
-                    decor_stack.append(Decoration(idx, char))
+                    decor = self._parse_decoration(self, line, idx);
+                    output['content'].append(decor)
 
+            end += 1
 
-
-
+        return output
 
