@@ -1,4 +1,4 @@
-class ParsingException(Exception):
+class MarkdownSyntaxError(Exception):
     def __init__(self, file, lineno, message=''):
         self._file = file
         self._lineno = lineno
@@ -6,5 +6,5 @@ class ParsingException(Exception):
         super().__init__(message)
 
     def __str__(self):
-        return f'ParsingException in {self._file}: line {self._lineno} - {self._message}'
+        return f'MarkdownSyntaxError in {self._file}: line {self._lineno} - {self._message}'
 

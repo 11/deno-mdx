@@ -1,38 +1,35 @@
-from pathlib import Path
-
-
-def read_file(filename, file_type:str=None):
-    if not filename:
-        raise ValueError(f'Must enter filename')
-
-    file = Path(filename)
+def read_file(file: Path, filetype:str=None):
     if not file.exists:
         raise FileNotFoundError(f'{filename} does not exist')
-    if file_type and file.suffix != file_type:
+    elif filetype and file.suffix != filetype:
         raise ValueError(f'{filename} is not of type {file_type}')
 
-    with file.open() as f:
-        for line in f:
-            yield line
+    def _fileiter():
+        with file.open() as f:
+            for line in f:
+                yield line
+
+    return Reader(_fileiter)
 
 
-def write_file(data: dict, output_file: str):
-    """ pprints to file """
-    if not data:
-        raise ValueError(f'Must enter filename')
-    elif not output_file:
-        raise ValueError(f'Must enter filename')
+class Reader:
+    """ L1 Parser iterator helper """
 
+    def __init__(self, fileiter):
+        self._prev_line = None
+        self._backstep = None
+        self._fileiter = fileiter
 
-    output = Path(output_file)
-    if not file.exists:
-        pass
+    def __next__(self):
+        if self._backstep:
+            line = self._backstep
+            self._backstep = None
+            return line
 
+        line = next(self._fileiter())
+        self.prev = line
 
-def write_json_stdout(data: dict):
-    """ pprints to stdout """
-    pass
+        return line
 
-
-def write_(data: dict):
-    pass
+    def backstep(self, line):
+        self._backstep = self._prev
