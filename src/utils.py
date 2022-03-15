@@ -2,6 +2,8 @@ from pathlib import Path
 
 
 def read_file(file: Path, filetype:str=None):
+    """ performs error handling on files before creating a file iteartor """
+
     if not file.exists:
         raise FileNotFoundError(f'{filename} does not exist')
     elif filetype and file.suffix != filetype:
@@ -16,7 +18,13 @@ def read_file(file: Path, filetype:str=None):
 
 
 class FileReader:
-    """ L1 Parser iterator helper """
+    """ L1 Parser file iterator
+
+    This FileReader class allows the parsing loop to look 1 line ahead. If the parsing loop
+    wants to go back an iteration, the parsing loop can call `backstep()` to undo the last
+    iteration. This is useful for parsing multiline blocks - such as lists and codeblocks that
+    could potentially be several lines long.
+    """
 
     def __init__(self, reader):
         self._prev = None
