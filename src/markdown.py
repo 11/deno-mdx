@@ -1,5 +1,6 @@
 import re
 import json
+import pdb
 from pprint import pformat
 from pathlib import Path
 
@@ -11,8 +12,9 @@ from errors import MarkdownSyntaxError
 class Markdown:
     def __init__(self, file):
         self._filepath = Path(file)
-        self._filename = filepath.name
         self._lineno = 0
+
+        self._reader = None
 
     def __repr__(self):
         return f'File {self._filename} - Lines processed {self._lineno}'
@@ -20,32 +22,34 @@ class Markdown:
     def __str__(self):
         return pformat(self.parse())
 
+    def __iter__(self):
+        self._reader = utils.read_file(self._filepath)
+        return self
+
     def __next__(self):
-        reader = utils.read_file(self._filename)
-        while (line := next(reader, None)):
-            if re.match(tks['header'], line):
-                header = self._parse_header(line)
-                yield header
-            elif re.match(tks['blockquote'], line):
-                blockquote = self._parse_blockquote(line)
-                yield blockquote
-            elif re.match(tks['ordered_list'], line):
-                ordered_list = self._parse_ordered_list(reader)
-                yield ordered_list
-            elif re.match(tks['unordered_list'], line):
-                unordered_list = self._parse_unordered_list(reader)
-                yield unordered_list
-            elif re.match(tks['image'], line):
-                print('image')
-            elif re.match(tks['codeblock'], reader):
-                print('codeblock')
-            else:
-                print('paragraph')
+        line = next(self._reader, None)
+        if not line:
+            raise StopIteration
 
-            self._lineno += 1
+        self._lineno += 1
 
-    def dump(self):
-        return json.dump(self.parse())
+        if re.match(tks['header'], line):
+            return self._parse_header(line)
+        elif re.match(tks['blockquote'], line):
+            return self._parse_blockquote(line)
+        elif re.match(tks['ordered_list'], line):
+            return self._parse_ordered_list(self._reader)
+        elif re.match(tks['unordered_list'], line):
+            return self._parse_unordered_list(slef._reader)
+        elif re.match(tks['image'], line):
+            print('image')
+        elif re.match(tks['codeblock'], self._reader):
+            print('codeblock')
+        else:
+            print('paragraph')
+
+    def file(self):
+        return self._filepath
 
     def parse(self):
         if not self._filepath:
@@ -94,7 +98,6 @@ class Markdown:
     def _parse_image(self, line):
         pass
 
-
     def _parse_codeblock(self, line, reader):
         match = re.findall(tks['codeblock'], line)
         if len(match) > 1:
@@ -113,8 +116,7 @@ class Markdown:
         }
 
     def _parse_list(self, reader, list_type, list_tag):
-        # reset the file generator back to the beginning of the ordered list
-        reader.backstep()
+        reader.backstep() # reset the file generator back to the beginning of the ordered list
 
         output = {
             'element': list_type,
@@ -155,11 +157,12 @@ class Markdown:
         pass
 
     def _parse_text(self, line):
-        if not line:
-            return None
-
-        output = { 'element': 'paragraph', 'tag': 'p', 'content': [], }
         decors = set('*', '_', '~', '/', '`', '[')
+        output = {
+            'element': 'paragraph',
+            'tag': 'p',
+            'content': [],
+        }
 
         start = 0
         end = 0

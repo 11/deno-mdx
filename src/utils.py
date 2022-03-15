@@ -1,24 +1,31 @@
+from pathlib import Path
+
+
 def read_file(file: Path, filetype:str=None):
     if not file.exists:
         raise FileNotFoundError(f'{filename} does not exist')
     elif filetype and file.suffix != filetype:
         raise ValueError(f'{filename} is not of type {file_type}')
 
-    def _fileiter():
+    def _readfile():
         with file.open() as f:
             for line in f:
                 yield line
 
-    return Reader(_fileiter)
+    return FileReader(_readfile)
 
 
-class Reader:
+class FileReader:
     """ L1 Parser iterator helper """
 
-    def __init__(self, fileiter):
-        self._prev_line = None
+    def __init__(self, reader):
+        self._prev = None
         self._backstep = None
-        self._fileiter = fileiter
+
+        self._reader = reader()
+
+    def __iter__(self):
+        return self
 
     def __next__(self):
         if self._backstep:
@@ -26,10 +33,12 @@ class Reader:
             self._backstep = None
             return line
 
-        line = next(self._fileiter())
-        self.prev = line
+        line = next(self._reader, None)
+        if not line:
+            raise StopIteration
 
+        self._prev = line
         return line
 
-    def backstep(self, line):
+    def backstep(self):
         self._backstep = self._prev

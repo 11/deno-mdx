@@ -11,6 +11,7 @@
 
 
 import unittest
+from pathlib import Path
 
 from markdown import Markdown as MD
 
@@ -20,9 +21,14 @@ TESTCASE_DIR = '../testcases/'
 
 class TestHeader(unittest.TestCase):
     def test_valid_headers(self):
-        output = MD(TESTCASE_DIR + 'test_header.md').parse()
+        test_file = TESTCASE_DIR + 'test_header.md'
+
+        header_test = MD(test_file)
+        output = header_test.parse()
+
         expected_output = {
-            'file': '../testcases/test_header.md',
+            'filename': 'test_header.md',
+            'filepath': header_test.file(),
             'content': [{
                 'token': 'header',
                 'tag': 'h1',
