@@ -20,17 +20,18 @@ alias td="python3 /usr/bin/touchdown/__main__.py"
 
 Parse markdown into JSON format
 ```bash
-td --format=json  blog.md
-td -f=json blog.md
-
 # The default output format is JSON
 td blog.md
+
+# You can specific the format using the `-f` or `--format` option
+td -f=json blog.md
+td --format=json blog.md
 ```
 
 Parse markdown to HTML format
 ```bash
-td --format=html blog.md
 td -f=html blog.md
+td --format=html blog.md
 ```
 
 
@@ -39,17 +40,20 @@ td -f=html blog.md
 Quickly parse Markdown file
 
 ```python3
-from touchdown import Markdown as MD
+from touchdown import Markdown as Md
 
-blog = MD('path/to/markdown_file.md')
-print(blog.parse()) # output's JSON
+blog = Md('path/to/markdown_file.md')
+blog.parse()
+
+print(blog.json)    # writes JSON to stdout
+print(blog.html)    # writes HTML to stdout
 ```
 
 Customize the Markdown parsing
 ```python3
-from touchdown import Markdown as MD
+from touchdown import Markdown as Md
 
-blog = MD('path/to/markdown_file.md')
+blog = Md('path/to/markdown_file.md')
 
 headers = []
 for symbol in blog:
