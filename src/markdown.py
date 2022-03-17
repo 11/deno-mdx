@@ -16,7 +16,7 @@ class Markdown:
         self._reader = None
 
     def __repr__(self):
-        return f'File {self._filename} - Lines processed {self._lineno}'
+        return f'File {self._filepath.name} - Lines processed {self._lineno}'
 
     def __str__(self):
         return pformat(self.parse())
@@ -47,18 +47,29 @@ class Markdown:
         else:
             print('paragraph')
 
+    @property
     def file(self):
         return self._filepath
 
-    def parse(self):
+    @property
+    def filename(self)
+        return self._filepath.name
+
+    def parse(self, output='json'):
         if not self._filepath:
             raise FileNotFoundError
 
-        return {
-            'filename': self._filepath.name,
-            'filepath': self._filepath,
+        json = {
+            'filename': self.filename,
+            'filepath': self.file,
             'content': [token for token in self],
         }
+
+        if output == 'json':
+            return json
+        else:
+            # TODO: parse HTML output
+            pass
 
     def _parse_header(self, line):
         match = re.findall(tks['header'], line)
@@ -91,7 +102,7 @@ class Markdown:
         return {
             'token': 'blockquote',
             'tag': 'blockquote',
-            'content': content,
+            'content': self._parse_text(content),
         }
 
     def _parse_image(self, line):
@@ -135,10 +146,11 @@ class Markdown:
                 raise MarkdownSyntaxError(self._file, self._lineno, '')
 
             _, content = match[0]
+
             output['content'].append({
                 'token': 'listitem',
                 'tag': 'li',
-                'content': content,
+                'content': self._parse_text(content),
             })
 
         return output
@@ -153,10 +165,36 @@ class Markdown:
         pass
 
     def _parse_decoration(self, line, seek=0):
-        pass
+        decors = set('*', '`', '/', '_', '~')
+        decors_map = {
+            '*': { 'token': 'bold',          'tag': 'b' },
+            '`': { 'token': 'code',          'tag': 'span' },
+            '/': { 'token': 'italic',        'tag': 'i' },
+            '_': { 'token': 'underline',     'tag': 'u' },
+            '~': { 'token': 'strikethrough', 'tag': 'strikethrough' },
+        }
+
+        stack = []
+        idx = seek
+        while idx < len(line):
+            cur = line[idx]
+            prev = line[idx-1] if idx > 0 else None
+
+            if prev != '\\' and cur in decors:
+                if len(stack) > 0 and stack[-1] == cur:
+                    char, start_idx = stack.pop()
+                    decor = decors_map[char].copy()
+                    decor['content'] =
+
+                else:
+                    stack.append((cur, idx))
+
+            idx += 1
+
+        return output
 
     def _parse_text(self, line):
-        decors = set('*', '_', '~', '/', '`', '[')
+        decors = set('*', '_', '~', '/', '`')
         output = {
             'element': 'paragraph',
             'tag': 'p',
@@ -167,7 +205,7 @@ class Markdown:
         end = 0
         while end < len(line):
             cur = line[idx]
-            prev = line[idx-1] if idx > 0 else 0
+            prev = line[idx-1] if idx > 0 else None
 
             if prev != '\\' and cur in decors:
                 # append plain text to output and reset sliding window
@@ -175,12 +213,9 @@ class Markdown:
                 output['content'].append(text)
                 start = end
 
-                if cur == '[':
-                    link = self._parse_link(self, line, idx)
-                    output['content'].append(link)
-                else:
-                    decor = self._parse_decoration(self, line, idx);
-                    output['content'].append(decor)
+                # parse decorations
+                decor = self._parse_decoration(self, line, idx);
+                output['content'].append(decor)
 
             end += 1
 
