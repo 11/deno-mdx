@@ -1,7 +1,17 @@
 from pathlib import Path
 
 
-def read_file(file: Path, filetype:str=None):
+MARKDOWN_TOKENS = {
+    'header': r'^(#{1,6}?) (.*?)$',
+    'blockquote': r'^\> [\s\S]*$',
+    'ordered_list': r'^[0-9]{1,}. ([\s\S]*)$',
+    'unordered_list': r'^- ([\s\S]*)$',
+    'image': r'^!\[(.*)\]\((.*)\)$',
+    'codeblock': r'^```$',
+}
+
+
+def readfile(file: Path, filetype:str=None):
     """ performs error handling on files before creating a file iteartor """
 
     if not file.exists:
@@ -14,10 +24,10 @@ def read_file(file: Path, filetype:str=None):
             for line in f:
                 yield line
 
-    return FileReader(_readfile)
+    return _FileReader(_readfile)
 
 
-class FileReader:
+class _FileReader:
     """ L1 Parser file iterator
 
     This FileReader class allows the parsing loop to look 1 line ahead. If the parsing loop

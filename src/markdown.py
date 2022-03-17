@@ -1,10 +1,11 @@
 import re
 import json
+import logging
 from pprint import pformat
 from pathlib import Path
 
-import utils
-from constants import tokens as tks
+import lib
+from lib import MARKDOWN_TOKENS as tks
 from errors import MarkdownSyntaxError
 
 
@@ -12,6 +13,7 @@ class Markdown:
     def __init__(self, file):
         self._filepath = Path(file)
         self._lineno = 0
+        self._output = 'json'
 
         self._reader = None
 
@@ -19,10 +21,14 @@ class Markdown:
         return f'File {self._filepath.name} - Lines processed {self._lineno}'
 
     def __str__(self):
+        if self._output == 'html':
+            # TODO: pprint HTML
+            pass
+
         return pformat(self.parse())
 
     def __iter__(self):
-        self._reader = utils.read_file(self._filepath)
+        self._reader = lib.readfile(self._filepath)
         return self
 
     def __next__(self):
@@ -52,10 +58,16 @@ class Markdown:
         return self._filepath
 
     @property
-    def filename(self)
+    def filename(self):
         return self._filepath.name
 
-    def parse(self, output='json'):
+    def parse(self, output: str='json'):
+        if not output or output != 'json' or output != 'html':
+            output = 'json'
+            print(f'{output_type} is not an accepted output format. Falling back to JSON as output format')
+
+        output = output.lower()
+
         if not self._filepath:
             raise FileNotFoundError
 
@@ -184,8 +196,7 @@ class Markdown:
                 if len(stack) > 0 and stack[-1] == cur:
                     char, start_idx = stack.pop()
                     decor = decors_map[char].copy()
-                    decor['content'] =
-
+                    # decor['content'] =
                 else:
                     stack.append((cur, idx))
 
