@@ -18,8 +18,6 @@ def _run(files=[], output='json', verbose=False, destination=None, failfast=Fals
     for filename in files:
         try:
             file = Md(filename)
-            result = None
-
             start = time.time()
             result = file.parse(output=output, pretty=pretty)
             end = time.time()
@@ -28,6 +26,7 @@ def _run(files=[], output='json', verbose=False, destination=None, failfast=Fals
             total_time += elapsed_time
 
             if destination:
+                # TODO: write result to output dir
                 pass
             elif verbose or len(files) > 1:
                 print(f'{filename}\n{result}\n')
