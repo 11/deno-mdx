@@ -28,10 +28,9 @@ def _run(files=[], output='json', verbose=False, destination=None, failfast=Fals
             total_time += elapsed_time
 
             if destination:
-                # TODO: write output to file in cwd
                 pass
-            elif verbose:
-                print(f'{filename}\n{result}')
+            elif verbose or len(files) > 1:
+                print(f'{filename}\n{result}\n')
             else:
                 print(result)
         except MarkdownSyntaxError as md_err:
@@ -46,7 +45,7 @@ def _run(files=[], output='json', verbose=False, destination=None, failfast=Fals
 
     if verbose:
         total_time_msg = f'Total time: {round(total_time, 6)} secs'
-        line_break = f'\n{"-" * len(total_time_msg)}'
+        line_break = f'{"-" * len(total_time_msg)}'
         print(line_break)
         print(total_time_msg)
 
