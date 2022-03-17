@@ -30,11 +30,10 @@ def _run(files=[], output='json', verbose=False, destination=None, failfast=Fals
             if destination:
                 # TODO: write output to file in cwd
                 pass
+            elif verbose:
+                print(f'{filename}\n{result}')
             else:
-                if verbose:
-                    print(f'{filename}\n{result}')
-                else:
-                    print(result)
+                print(result)
         except MarkdownSyntaxError as md_err:
             logger.exception(md_error)
             if strict:
