@@ -25,57 +25,34 @@ From there you can start parsing markdown files
 td blog.md
 ```
 
-Here are some examples:
+### Terminal Command Examples
+Parse markdown files into HTML
 ```bash
-# parse markdown files into HTML
 td --output=html blog.md
+```
 
-
-# parse markdown files and pretty print to stdout
+Parse markdown files and pretty print to stdout
+```bash
 td --pretty blog.md
+```
 
-
-# parse all markdown files in a diectory
+Parse all markdown files in a diectory
+```bash
 td ../path/to/files/*.md
+```
 
 
-# parse all markdown files from a directory, and write outputs into another directory
-# NOTE: all the output files will have the same names
-#   - Ex: ../path/to/markdown_files/first_blog.md => ./blogs/first_blog.json
+Parse all markdown files from one directory, and write the outputs into another directory
+```bash
 td --output=./blogs/ ../path/to/markdown_files/*.md
+```
 
-
-# kill process if an error occurs
-td --failfast blog.md
-
-
-# strictly validate markdown syntax and kill process if invalid
+Validate markdown syntax - kill process if invalid and log error message
+```bash
 td --strict blog.md
 ```
 
-For more info here's the usage text
-```
-usage: td [-h] [-d DESTINATION] [-o {json,html}] [-v] [-f] [-s] [-p] Files [Files ...]
-
-Parse markdown files
-
-positional arguments:
-  Files                 Set of files that will parsed
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -d DESTINATION, --destination DESTINATION
-                        Output directory
-  -o {json,html}, --output {json,html}
-                        Specify output format (default: json)
-  -v, --verbose         Log time it took to parse each file (default: false)
-  -f, --failfast        Kill process if an error occurs (default: false)
-  -s, --strict          Kill process if invalid markdown syntax (default:
-                        false)
-  -p, --pretty          Format output
-```
-
-### How to use Python module
+### How to use Python Module
 
 Quickly parse Markdown file
 
@@ -100,7 +77,7 @@ for symbol in blog:
        headers.append(symbol)
 ```
 
-### Why develop yet another Markdown parser?
+### Why Develop Yet Another Markdown Parser?
 
 The simple answer is there just isn't a Markdown parser that I like. Ideally, I'd like a Markdown parser that has strict parsing rules, can output to several formats (JSON and HTML), hands over full control of the parsing loop to the user, and doesn't come bundled with other packages.
 
