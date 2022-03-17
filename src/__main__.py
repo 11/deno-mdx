@@ -32,11 +32,11 @@ if __name__ == '__main__':
 
     # positional args
     parser.add_argument('files', metavar='Files', type=Path, nargs='+', action='append', help='Set of files that will parsed')
-    parser.add_argument('destination', metavar='Destination', type=Path, nargs='?', default=Path('./'), help='Specify output directory')
+    parser.add_argument('destination', metavar='Destination', type=Path, nargs='?', default=Path('./'), help='Output directory')
 
     # optional args
     parser.add_argument('--output', type=str, choices=['json', 'html'], default='json', help='Specify output format (default: json)')
-    parser.add_argument('--progress', type=bool, default=False, help='Show time it took parse each file (default: false)')
+    parser.add_argument('--progress', type=bool, default=False, help='Show time it took to parse each file (default: false)')
     parser.add_argument('--failfast', type=bool, default=False, help='Kill process if an error occurs (default: false)')
     parser.add_argument('--strict', type=bool, default=False, help='Kill process if invalid markdown syntax (default: false)')
 
