@@ -26,29 +26,20 @@ td blog.md
 ```
 
 ### Terminal Command Examples
-Parse markdown files into HTML
 ```bash
+#Parse markdown files into HTML
 td --output=html blog.md
-```
 
-Parse markdown files and pretty print to stdout
-```bash
+# Parse markdown files and pretty print to stdout
 td --pretty blog.md
-```
 
-Parse all markdown files in a diectory
-```bash
+# Parse all markdown files in a diectory
 td ../path/to/files/*.md
-```
 
-
-Parse all markdown files from one directory, and write the outputs into another directory
-```bash
+# Parse all markdown files from one directory, and write the outputs into another directory
 td --output=./blogs/ ../path/to/markdown_files/*.md
-```
 
-Validate markdown syntax - kill process if invalid and log error message
-```bash
+# Validate markdown syntax - kill process if invalid and log error message
 td --strict blog.md
 ```
 
