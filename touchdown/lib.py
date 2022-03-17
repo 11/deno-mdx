@@ -11,23 +11,23 @@ MARKDOWN_TOKENS = {
 }
 
 
-def readfile(file: Path, filetype:str=None):
+def readfile(file: Path, filetype: str=None):
     """ performs error handling on files before creating a file iteartor """
 
     if not file.exists:
-        raise FileNotFoundError(f'{filename} does not exist')
+        raise FileNotFoundError(f'{filename} does not exist') from None
     elif filetype and file.suffix != filetype:
-        raise ValueError(f'{filename} is not of type {file_type}')
+        raise ValueError(f'{filename} is not of type {file_type}') from None
 
     def _readfile():
         with file.open() as f:
             for line in f:
                 yield line
 
-    return _FileReader(_readfile)
+    return _FileParser(_readfile)
 
 
-class _FileReader:
+class _FileParser:
     """ L1 Parser file iterator
 
     This FileReader class allows the parsing loop to look 1 line ahead. If the parsing loop

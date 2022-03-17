@@ -13,7 +13,7 @@
 import unittest
 from pathlib import Path
 
-from markdown import Markdown as Md
+from .markdown import Markdown as Md
 
 
 TESTCASE_DIR = '../testcases/'

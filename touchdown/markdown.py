@@ -4,9 +4,12 @@ import logging
 from pprint import pformat
 from pathlib import Path
 
-import lib
-from lib import MARKDOWN_TOKENS as tks
-from errors import MarkdownSyntaxError
+from .lib import readfile
+from .lib import MARKDOWN_TOKENS as tks
+from .errors import MarkdownSyntaxError
+
+
+logger = logging.getLogger()
 
 
 class Markdown:
@@ -28,7 +31,7 @@ class Markdown:
         return pformat(self.parse())
 
     def __iter__(self):
-        self._reader = lib.readfile(self._filepath)
+        self._reader = readfile(self._filepath)
         return self
 
     def __next__(self):
@@ -54,46 +57,30 @@ class Markdown:
             print('paragraph')
 
     @property
-    def file(self):
-        return self._filepath
-
-    @property
     def filename(self):
         return self._filepath.name
 
-    def parse(self, output: str='json'):
-        if not output or output != 'json' or output != 'html':
-            output = 'json'
-            print(f'{output_type} is not an accepted output format. Falling back to JSON as output format')
-
-        output = output.lower()
-
-        if not self._filepath:
-            raise FileNotFoundError
-
-        json = {
-            'filename': self.filename,
-            'filepath': self.file,
+    def parse(self, output='json', pretty=False):
+        result = {
+            'filename': self._filepath.name,
             'content': [token for token in self],
         }
 
         if output == 'json':
-            return json
+            if pretty:
+                return json.dumps(result, indent=4, sort_keys=True)
+            else:
+                return json.dumps(result)
         else:
             # TODO: parse HTML output
             pass
 
     def _parse_header(self, line):
         match = re.findall(tks['header'], line)
-        if len(match) > 1:
-            raise MarkdownSyntaxError(self._file, self._lineno, '')
-        elif len(match) < 1:
+        if len(match) != 1:
             raise MarkdownSyntaxError(self._file, self._lineno, '')
 
         header, content = match[0]
-        if not header or not content:
-            return None
-
         return {
             'token': 'header',
             'tag': f'h{len(header)}',
@@ -102,15 +89,10 @@ class Markdown:
 
     def _parse_blockquote(self, line):
         match = re.findall(tks['blockquote'], line)
-        if len(match) > 1:
-            raise MarkdownSyntaxError(self._file, self._lineno, '')
-        elif len(match) < 1:
+        if len(match) != 1:
             raise MarkdownSyntaxError(self._file, self._lineno, '')
 
         blockquote, content = match[0]
-        if not blockquote or not content:
-            return None
-
         return {
             'token': 'blockquote',
             'tag': 'blockquote',
@@ -122,19 +104,15 @@ class Markdown:
 
     def _parse_codeblock(self, line, reader):
         match = re.findall(tks['codeblock'], line)
-        if len(match) > 1:
-            raise MarkdownSyntaxError(self._file, self._lineno, '')
-        elif len(match) < 1:
+        if len(match) != 1:
             raise MarkdownSyntaxError(self._file, self._lineno, '')
 
         codeblock, content = match[0]
-        if not codeblock or not content:
-            return None
-
         return {
             'token': 'codeblock',
             'tag': 'pre',
             'content': content,
+            'languahe': None,
         }
 
     def _parse_list(self, reader, list_type, list_tag):
