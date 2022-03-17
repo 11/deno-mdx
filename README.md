@@ -29,19 +29,25 @@ source ~/.bashrc    # or ~/.bash_profile if you're on mac
 ```
 
 ### How to use CLI?
-
-Parse markdown files to JSON or HTML
 ```bash
-# The default output format is JSON
-td blog.md    # outputs JSON
+usage: td [-h] [-d DESTINATION] [-o {json,html}] [-v] [-f] [-s] [-p] Files [Files ...]
 
-# You can be explict about the output format by using the `-o` or `--output` flag
-td -o=json blog.md
-td --output=json blog.md
+Parse markdown files
 
-# Output HTML by updating the format option
-td -o=html blog.md
-td --output=html blog.md
+positional arguments:
+  Files                 Set of files that will parsed
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -d DESTINATION, --destination DESTINATION
+                        Output directory
+  -o {json,html}, --output {json,html}
+                        Specify output format (default: json)
+  -v, --verbose         Log time it took to parse each file (default: false)
+  -f, --failfast        Kill process if an error occurs (default: false)
+  -s, --strict          Kill process if invalid markdown syntax (default:
+                        false)
+  -p, --pretty          Format output
 ```
 
 ### How to use Python module
