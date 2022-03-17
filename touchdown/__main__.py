@@ -20,23 +20,18 @@ def _run(files=[], output='json', verbose=False, destination=None, failfast=Fals
             file = Md(filename)
             result = None
 
-            if verbose:
-                start = time.time()
-                result = file.parse(output=output, pretty=pretty)
-                end = time.time()
+            start = time.time()
+            result = file.parse(output=output, pretty=pretty)
+            end = time.time()
 
-                elapsed_time = abs(start - end)
-                total_time += elapsed_time
-
-                print(f'{filename} parsed in {elapsed_time}secs')
-            else:
-                result = file.parse(output=output, pretty=pretty)
+            elapsed_time = abs(start - end)
+            total_time += elapsed_time
 
             if destination:
                 # TODO: write output to file in cwd
                 pass
             else:
-                if len(files) > 1:
+                if verbose:
                     print(f'{filename}\n{result}')
                 else:
                     print(result)
@@ -51,12 +46,14 @@ def _run(files=[], output='json', verbose=False, destination=None, failfast=Fals
                 return
 
     if verbose:
-        print('----------------------------------------------')
-        print(f'Total time: {total_time}secs')
+        total_time_msg = f'Total time: {round(total_time, 6)} secs'
+        line_break = f'\n{"-" * len(total_time_msg)}'
+        print(line_break)
+        print(total_time_msg)
 
 
 if __name__ == '__main__':
-    parser = ArgumentParser(description='Parse markdown files', allow_abbrev=True)
+    parser = ArgumentParser(prog='td', description='Parse markdown files')
 
     # positional args
     parser.add_argument('files', metavar='Files', type=Path, nargs='+', help='Set of files that will parsed')
