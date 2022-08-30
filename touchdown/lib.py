@@ -7,6 +7,7 @@ MARKDOWN_TOKENS = {
     'ordered_list': r'^[0-9]{1,}. ([\s\S]*)$',
     'unordered_list': r'^- ([\s\S]*)$',
     'image': r'^!\[(.*)\]\((.*)\)$',
+    'link': r'^!\[(.*)\]\((.*)\)$',
     'codeblock': r'^```$',
 }
 
@@ -24,13 +25,13 @@ def readfile(file: Path, filetype: str=None):
             for line in f:
                 yield line
 
-    return _FileParser(_readfile)
+    return _FileIterator(_readfile)
 
 
-class _FileParser:
+class _FileIterator:
     """ L1 Parser file iterator
 
-    This FileReader class allows the parsing loop to look 1 line ahead. If the parsing loop
+    This FileReader class allows the parsing loop to remember 1 line previous. If the parsing loop
     wants to go back an iteration, the parsing loop can call `backstep()` to undo the last
     iteration. This is useful for parsing multiline blocks - such as lists and codeblocks that
     could potentially be several lines long.

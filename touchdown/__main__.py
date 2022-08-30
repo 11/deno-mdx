@@ -1,68 +1,41 @@
 import sys
 import time
-import logging
-from argparse import ArgumentParser
+from json import dumps
 from pathlib import Path
+from pprint import pformat
 
-from .errors import MarkdownSyntaxError
-from .markdown import Markdown as Md
+import commandline
+from html import Html
+from markdown import Markdown
+from errors import MarkdownSyntaxError
 
-
-logging.basicConfig(stream='sys.stdout')
-logger = logging.getLogger(__name__)
-
-
-def _run(files=[], output='json', verbose=False, destination=None, failfast=False, strict=False, pretty=False):
+def _run(files=[], output='json', destination=None):
     total_time = 0
 
-    for filename in files:
+    for file in files:
         try:
-            file = Md(filename)
-            start = time.time()
-            result = file.parse(output=output, pretty=pretty)
-            end = time.time()
+            md = Markdown(file)
+            tokens = md.tokenize()
 
-            elapsed_time = abs(start - end)
-            total_time += elapsed_time
-
-            if destination:
-                # TODO: write result to output dir
-                pass
-            elif verbose or len(files) > 1:
-                print(f'{filename}\n{result}\n')
+            if destination is None:
+                if output.lower() == 'json':
+                    print(dumps(tokens, sort_keys=True, indent=2))
+                elif output.lower() == 'html':
+                    interpreter = Html(tokens)
+                    html = interpreter.interpret()
+                    print(html)
             else:
-                print(result)
+                with destination.open() as f:
+                    if output.lower() == 'json':
+                        f.write(dumps(tokens))
+                    elif output.lower() == 'html':
+                        interpreter = Html(tokens)
+                        html = interpreter.interpret()
+                        f.write(html)
         except MarkdownSyntaxError as md_err:
-            logger.exception(md_error)
-            if strict:
-                return
-        except FileNotFoundError as fnf_err:
-            logger.exception(f'`{filename}` does not exist')
-        finally:
-            if failfast:
-                return
-
-    if verbose:
-        total_time_msg = f'Total time: {round(total_time, 6)} secs'
-        line_break = f'{"-" * len(total_time_msg)}'
-        print(line_break)
-        print(total_time_msg)
-
+            print(md_error)
 
 if __name__ == '__main__':
-    parser = ArgumentParser(prog='td', description='Parse markdown files')
-
-    # positional args
-    parser.add_argument('files', metavar='Files', type=Path, nargs='+', help='Set of files that will parsed')
-
-    # optional args
-    parser.add_argument('-d', '--destination', type=Path, default=None, help='Output directory')
-    parser.add_argument('-o', '--output', type=str, choices=['json', 'html'], default='json', help='Specify output format (default: json)')
-    parser.add_argument('-v', '--verbose', const=True, default=False, action='store_const', help='Log time it took to parse each file (default: false)')
-    parser.add_argument('-f', '--failfast', const=True, default=False, action='store_const', help='Kill process if an error occurs (default: false)')
-    parser.add_argument('-s', '--strict', const=True, default=False, action='store_const', help='Kill process if invalid markdown syntax (default: false)')
-    parser.add_argument('-p', '--pretty', const=True, default=False, action='store_const', help='Format output')
-
-    args = vars(parser.parse_args())
-    _run(**args)
+    kwargs = commandline.parseargs()
+    _run(**kwargs)
 
