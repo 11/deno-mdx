@@ -139,6 +139,8 @@ class Markdown:
             match = None
             if re.match(tks['ordered_list'], line):
                 match = re.findall(tks['ordered_list'], line)
+            elif re.match(tks['unordered_list'], line):
+                match = re.findall(tks['unordered_list'], line)
             else:
                 reader.backstep()
                 break
@@ -146,7 +148,7 @@ class Markdown:
             if len(match) != 1:
                 raise MarkdownSyntaxError(self._file, self._lineno, '')
 
-            _, content = match[0]
+            content = match[0]
             output['content'].append({
                 'type': 'listitem',
                 'tag': 'li',
@@ -158,7 +160,7 @@ class Markdown:
     def _parse_ordered_list(self, reader):
         return self._parse_list(reader, 'ordered_list', 'ol')
 
-    def _parse_unordered_list(self, line):
+    def _parse_unordered_list(self, reader):
         return self._parse_list(reader, 'unordered_list', 'ul')
 
     def _parse_image(self, line):
