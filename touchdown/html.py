@@ -1,7 +1,3 @@
-import pdb
-from pprint import pprint
-
-
 class Html:
     def __init__(self, md_tokens):
         self._md_tokens = md_tokens
