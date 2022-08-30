@@ -279,6 +279,13 @@ class Markdown:
 
             idx += 1
 
+        if len(text.getvalue()) > 0:
+            output['content'].append({
+                'content': text.getvalue(),
+                'tag': None,
+                'type': None,
+            })
+
         return output
 
     def _parse_paragraph(self, line):

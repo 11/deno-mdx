@@ -1,4 +1,5 @@
 import pdb
+from pprint import pprint
 
 
 class Html:
@@ -27,7 +28,7 @@ class Html:
             return self._write_paragraph(token)
 
     def interpret(self):
-        html = '\n'.join([element for element in self])
+        html = ''.join([element for element in self])
         return html
 
     def _write_header(self, elem):
@@ -51,28 +52,48 @@ class Html:
     def _write_list(self, elem):
         tag = elem['tag']
         content = elem['content']
-        list_items = [
+        list_items = ''.join([
             f'<li>{self._write_text(li["content"])}</li>'
             for li in content
-        ]
-        return f'<{tag}>{"".join(list_items)}</{tag}>'
+        ])
+        return f'<{tag}>{list_items}</{tag}>'
 
-    def _write_paragraph(self, elem):
-        tag = elem['tag']
-        content = elem['content']
-        text = self._write_text(content)
+    def _write_paragraph(self, token):
+        tag = token['tag']
+        text = ''.join([
+            self._write_text(line)
+            for line in token['content']
+        ])
+
+        # we want to avoid adding paragraph tags with no text inbetween.
+        # if the interpreter ever gets to this state, we return an empty string because
+        # the empty string will be parsed out inside `interpret()` after we call `''.join()`
+        # to combine the html together
+        if text == '':
+            return ''
+
         return f'<{tag}>{text}</{tag}>'
 
-    def _write_text(self, text):
-        lines = []
-        for line in text:
-            for block in line['content']:
-                if block.get('tag', None) is None:
-                    lines.append(block['content'])
-                else:
-                    start = [f'<{tag}>' for tag in block['tag']]
-                    end = reversed([f'</{tag}>' for tag in block['tag']])
-                    substr = f'{"".join(start)}{block["content"]}{"".join(end)}'
-                    lines.append(substr)
+    def _write_text(self, token):
+        text = []
+        for text_block in token['content']:
+            tags = token.get('tag', None)
+            content = text_block['content']
+            if content == '\n':
+                # this if statement will skip over text blocks that only newlines.
+                # we append an empty string because empty strings are parsed out
+                # when we call `''.join()` at the end of the function
+                text.append('')
+            elif tags is None:
+                # an empty tag means that the `content` is not wrapped in bold, underline,
+                # italic, code, strikethrough, etc. rather the text_block is just plain
+                # text
+                text.append(content)
+            else:
+                # in the event there are tags, we need to wrap the `content` of the
+                # text block with the open and closed tags
+                open_tags = ''.join([ f'<{tag}>' for tag in tags ])
+                close_tags = ''.join([ f'</{tag}>' for tag in reversed(tags) ])
+                text.append(f'{open_tags}{content}{close_tags}')
 
-        return ''.join(lines)
+        return ''.join(text)
