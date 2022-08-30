@@ -31,22 +31,22 @@ class Html:
         html = ''.join([element for element in self])
         return html
 
-    def _write_header(self, elem):
-        tag = elem['tag']
-        content = elem['content']
+    def _write_header(self, token):
+        tag = token['tag']
+        content = token['content']
         text = self._write_text(content)
         return f'<{tag}>{text}</{tag}>'
 
-    def _write_blockquote(self, elem):
-        tag = elem['tag']
-        content = elem['content']
+    def _write_blockquote(self, token):
+        tag = token['tag']
+        content = token['content']
         text = self._write_text(content)
         return f'<{tag}>{text}</{tag}>'
 
-    def _write_codeblock(self, elem):
-        tag = elem['tag']
-        content = elem['content']
-        language = elem['language']
+    def _write_codeblock(self, token):
+        tag = token['tag']
+        content = token['content']
+        language = token['language']
         return f'<{tag} data-language="{language}">{content}</{tag}>'
 
     def _write_list(self, elem):
@@ -65,11 +65,11 @@ class Html:
             for line in token['content']
         ])
 
-        # we want to avoid adding paragraph tags with no text inbetween.
-        # if the interpreter ever gets to this state, we return an empty string because
-        # the empty string will be parsed out inside `interpret()` after we call `''.join()`
-        # to combine the html together
         if text == '':
+            # we want to avoid adding paragraph tags with no text inbetween.
+            # if the interpreter ever gets to this state, we return an empty string because
+            # the empty string will be parsed out inside `interpret()` after we call `''.join()`
+            # to combine the html together
             return ''
 
         return f'<{tag}>{text}</{tag}>'
