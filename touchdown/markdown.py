@@ -51,8 +51,8 @@ class Markdown:
             return self._parse_unordered_list(self._reader)
         elif re.match(MARKDOWN_REGEXS['image'], line):
             return self._parse_image(line)
-        elif re.match(MARKDOWN_REGEXS['codeblock'], line):
-            return self._parse_codeblock(line)
+        elif re.match(MARKDOWN_REGEXS['codeblock_header'], line):
+            return self._parse_codeblock(self._reader)
         else:
             return self._parse_paragraph(line)
 
@@ -69,7 +69,7 @@ class Markdown:
     def _parse_header(self, line):
         match = re.findall(MARKDOWN_REGEXS['header'], line)
         if len(match) != 1:
-            raise MarkdownSyntaxError(self._file, self._lineno, '')
+            raise MarkdownSyntaxError(self._filepath, self._lineno, '')
 
         header, content = match[0]
         return {
@@ -81,27 +81,40 @@ class Markdown:
     def _parse_blockquote(self, line):
         match = re.findall(MARKDOWN_REGEXS['blockquote'], line)
         if len(match) != 1:
-            raise MarkdownSyntaxError(self._file, self._lineno, '')
+            raise MarkdownSyntaxError(self._filepath, self._lineno, '')
 
-        blockquote, content = match[0]
+        content = match[0]
         return {
             'type': 'blockquote',
             'tag': 'blockquote',
             'content': self._parse_text(content),
         }
 
-    def _parse_codeblock(self, line, reader):
-        match = re.findall(MARKDOWN_REGEXS['codeblock'], line)
-        if len(match) != 1:
-            raise MarkdownSyntaxError(self._file, self._lineno, '')
-
-        codeblock, content = match[0]
-        return {
+    def _parse_codeblock(self, reader):
+        output = {
             'type': 'codeblock',
-            'tag': 'code-block',
-            'content': content,
+            'tag': 'pre',
             'language': None,
+            'content': [],
         }
+
+        reader.backstep()
+        codeblock_header = next(reader)
+        match = re.findall(MARKDOWN_REGEXS['codeblock_header'], codeblock_header)
+        if len(match) != 1:
+            raise MarkdownSyntaxError(self._filepath, self._lineno, '')
+
+        _, language = match[0]
+        if language != '':
+            output['language'] = language
+
+        while (line := next(reader, None)):
+            if re.findall(MARKDOWN_REGEXS['codeblock_footer'], line):
+                break
+            else:
+                output['content'].append(line)
+
+        return output
 
     def _parse_list(self, reader, list_type, list_tag):
         reader.backstep() # reset the file generator back to the beginning of the ordered list
@@ -114,16 +127,16 @@ class Markdown:
 
         while (line := next(reader, None)):
             match = None
-            if re.match(MARKDOWN_REGEXS['ordered_list'], line):
+            if list_type == 'ordered_list' and re.match(MARKDOWN_REGEXS['ordered_list'], line):
                 match = re.findall(MARKDOWN_REGEXS['ordered_list'], line)
-            elif re.match(MARKDOWN_REGEXS['unordered_list'], line):
+            elif list_type == 'unordered_list' and re.match(MARKDOWN_REGEXS['unordered_list'], line):
                 match = re.findall(MARKDOWN_REGEXS['unordered_list'], line)
             else:
                 reader.backstep()
                 break
 
             if len(match) != 1:
-                raise MarkdownSyntaxError(self._file, self._lineno, '')
+                raise MarkdownSyntaxError(self._filepath, self._lineno, '')
 
             content = match[0]
             output['content'].append({
@@ -143,7 +156,7 @@ class Markdown:
     def _parse_image(self, line):
         match = re.findall(MARKDOWN_REGEXS['image'], line)
         if len(match) != 1:
-            raise MarkdownSyntaxError(self._file, self._lineno, '')
+            raise MarkdownSyntaxError(self._filepath, self._lineno, '')
 
         uri, alt_text = match[0]
         return {
@@ -181,8 +194,6 @@ class Markdown:
                 builder.write(char)
 
             idx += 1
-            prev = line[idx-1]
-            char = line[idx]
 
             if not (idx < len(line) and len(active) > 0):
                 break
@@ -191,7 +202,7 @@ class Markdown:
             # if the entire line of text was parsed and there are missing
             # closing decoration characters, raise a syntax error
             active_decorations = list(active)
-            raise MarkdownSyntaxError(self._file, self._lineno, f'{active_decorations[0]} needs a matching closing character')
+            raise MarkdownSyntaxError(self._filepath, self._lineno, f'{active_decorations[0]} needs a matching closing character')
 
         return decorations, idx
 
@@ -217,7 +228,7 @@ class Markdown:
             elif char in SPECIAL_CHARS and lag != '\\' and lookahead(char, line[idx+1:]) == False:
                 # if a special character is found but there is no closing special
                 # character, stop parsing and print a MarkdownSyntaxError
-                raise MarkdownSyntaxError(self._file, self._lineno, f'{char} needs a matching closing character')
+                raise MarkdownSyntaxError(self._filepath, self._lineno, f'{char} needs a matching closing character')
             elif char in SPECIAL_CHARS and lag != '\\' and lookahead(char, line[idx+1:]):
                 # if reading a special character that isn't escaped and
                 # the rest of the string contains a closing character,

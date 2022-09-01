@@ -1,4 +1,5 @@
 import pdb
+from pprint import pprint
 
 
 class Html:
@@ -25,6 +26,8 @@ class Html:
             return self._write_list(token)
         elif token['type'] == 'paragraph':
             return self._write_paragraph(token)
+        elif token['type'] == 'codeblock':
+            return self._write_codeblock(token)
 
     def interpret(self):
         html = '\n'.join([element for element in self])
@@ -44,9 +47,12 @@ class Html:
 
     def _write_codeblock(self, token):
         tag = token['tag']
-        content = token['content']
         language = token['language']
-        return f'<{tag} data-language="{language}">{content}</{tag}>'
+        content = ''.join(token['content'])
+        if language is None:
+            return f'<{tag}>\n{content}\n</{tag}>'
+        else:
+            return f'<{tag} data-language="{language}">\n{content}\n</{tag}>'
 
     def _write_list(self, elem):
         tag = elem['tag']
