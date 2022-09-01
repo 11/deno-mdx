@@ -220,8 +220,8 @@ class Markdown:
                 raise MarkdownSyntaxError(self._file, self._lineno, f'{char} needs a matching closing character')
             elif char in SPECIAL_CHARS and lag != '\\' and lookahead(char, line[idx+1:]):
                 # if reading a special character that isn't escaped and
-                # the rest of the string contains a closing character, end
-                # the current text node and start parsing deocrations
+                # the rest of the string contains a closing character,
+                # start parsing deocrations
                 content.append({
                     'type': None,
                     'tag': None,
@@ -240,6 +240,7 @@ class Markdown:
 
             idx += 1
 
+        content = list(filter(lambda token: token['content'] != '', content))
         return {
             'type': 'text',
             'content': content,

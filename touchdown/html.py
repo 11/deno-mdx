@@ -1,3 +1,6 @@
+import pdb
+
+
 class Html:
     def __init__(self, md_tokens):
         self._md_tokens = md_tokens
@@ -76,7 +79,7 @@ class Html:
     def _write_text(self, token):
         text = []
         for text_block in token['content']:
-            tags = token.get('tag', None)
+            tags = text_block.get('tag', None)
             content = text_block['content']
             if content == '\n':
                 # this if statement will skip over text blocks that only newlines.
