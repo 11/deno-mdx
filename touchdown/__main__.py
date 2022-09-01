@@ -33,7 +33,7 @@ def _run(files=[], output='json', destination=None):
                         html = interpreter.interpret()
                         f.write(html)
         except MarkdownSyntaxError as md_err:
-            print(md_error)
+            print(md_err)
 
 if __name__ == '__main__':
     kwargs = commandline.parseargs()
