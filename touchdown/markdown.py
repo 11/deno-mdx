@@ -228,11 +228,9 @@ class Markdown:
         content = []
         builder = StringBuilder()
 
-        idx = 0 # current index
-        lag = '' # character behind `char` - defaults to empty string on first iteration
-        char = line[idx] # current character being parsed
+        idx = 0
         while idx < len(line):
-            lag = line[idx-1]
+            lag = line[idx-1] if idx > 0 else ''
             char = line[idx]
 
             if idx == len(line) - 1:

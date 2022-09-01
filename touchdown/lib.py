@@ -11,9 +11,10 @@ def lookahead(pattern, substr):
             substr = 'this is a test string \\*'
 
           the double backslash before the * is escaping the backslash
-          character, NOT the * character. with the current implementation
-          this does not happen. this edge case is pretty rare and can mostly
-          be ignored - but should be resolved later
+          character, NOT the * character. in the current implementation
+          this would incorrectly assum the * character is being escaped.
+          this edge case is pretty rare and can mostly be ignored - but
+          should eventually be resolved later
     """
     next_idx = substr.find(pattern)
     if next_idx == -1:
