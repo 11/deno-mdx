@@ -156,73 +156,44 @@ class Markdown:
     def _parse_link(self, line):
         pass
 
-    # TODO: CLEAN UP
     def _parse_decoration(self, line, seek=0):
-        decors = set(['*', '_', '~', '/', '`'])
-        pool = set()
-        output = []
+        decorations = []
 
-        text = None
-        prev = None
+        active = set()
+        builder = StringBuilder()
         idx = seek
-        char = line[idx]
-        while idx < len(line):
-            if prev == '\\' and char in decors:
-                idx += 1
-                prev = line[idx-1]
-                char = line[idx]
-                continue
-            elif prev != '\\' and char in decors:
-                if len(pool) == 0:
-                    pool.add(char)
-                    block = { 'type': 'text', 'content': None }
-                    block.update(map_decorations_to_tokens(pool))
-                    output.append(block)
-                    text = StringBuilder()
-                elif char not in pool:
-                    # close off old decoration string
-                    output[-1]['content'] = text.getvalue()
-                    text.close()
-                    text = StringBuilder()
+        while True:
+            lag = line[idx-1] if idx > 0 else ''
+            char = line[idx]
 
-                    # append new decoration stirng
-                    pool.add(char)
+            if lag != '\\' and char in SPECIAL_CHARS:
+                block = { 'type': 'text', 'content': builder.getvalue() }
+                block.update(map_decorations_to_tokens(active))
+                decorations.append(block)
+                builder.close()
+                builder = StringBuilder()
 
-                    block = { 'type': 'text', 'content': None }
-                    block.update(map_decorations_to_tokens(pool))
-                    output.append(block)
-                elif char in pool and len(pool) > 1:
-                    output[-1]['content'] = text.getvalue()
-                    text.close()
-                    text = StringBuilder()
-                    pool.remove(char)
-
-                    block = { 'type': 'text', 'content': None }
-                    block.update(map_decorations_to_tokens(pool))
-                    output.append(block)
-                elif char in pool and len(pool) == 1:
-                    output[-1]['content'] = text.getvalue()
-                    text.close()
-                    pool.remove(char)
-                    return output, idx+1
-
-                idx += 1
-                prev = line[idx-1]
-                char = line[idx]
-                continue
-
-            text.write(char)
+                if char not in active:
+                    active.add(char)
+                else:
+                    active.remove(char)
+            else:
+                builder.write(char)
 
             idx += 1
             prev = line[idx-1]
             char = line[idx]
 
+            if not (idx < len(line) and len(active) > 0):
+                break
 
-        if len(pool) > 0:
-            output[-1]['content'] = text.getvalue()
-            text.close()
+        if len(active) > 0:
+            # if the entire line of text was parsed and there are missing
+            # closing decoration characters, raise a syntax error
+            active_decorations = list(active)
+            raise MarkdownSyntaxError(self._file, self._lineno, f'{active_decorations[0]} needs a matching closing character')
 
-        return output, idx
+        return decorations, idx
 
     def _parse_text(self, line):
         content = []
@@ -245,12 +216,12 @@ class Markdown:
                 builder.close()
             elif char in SPECIAL_CHARS and lag != '\\' and lookahead(char, line[idx+1:]) == False:
                 # if a special character is found but there is no closing special
-                # character, stop parsing and print an MarkdownSyntaxError
+                # character, stop parsing and print a MarkdownSyntaxError
                 raise MarkdownSyntaxError(self._file, self._lineno, f'{char} needs a matching closing character')
             elif char in SPECIAL_CHARS and lag != '\\' and lookahead(char, line[idx+1:]):
                 # if reading a special character that isn't escaped and
-                # the string rest of the string contains a closing character,
-                # end the text current text node and start parsing deocrations
+                # the rest of the string contains a closing character, end
+                # the current text node and start parsing deocrations
                 content.append({
                     'type': None,
                     'tag': None,

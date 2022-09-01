@@ -24,7 +24,7 @@ class Html:
             return self._write_paragraph(token)
 
     def interpret(self):
-        html = ''.join([element for element in self])
+        html = '\n'.join([element for element in self])
         return html
 
     def _write_header(self, token):
@@ -48,11 +48,11 @@ class Html:
     def _write_list(self, elem):
         tag = elem['tag']
         content = elem['content']
-        list_items = ''.join([
-            f'<li>{self._write_text(li["content"])}</li>'
+        list_items = '\n'.join([
+            f'\t<li>{self._write_text(li["content"])}</li>'
             for li in content
         ])
-        return f'<{tag}>{list_items}</{tag}>'
+        return f'<{tag}>\n{list_items}\n</{tag}>'
 
     def _write_paragraph(self, token):
         tag = token['tag']
@@ -60,6 +60,9 @@ class Html:
             self._write_text(line)
             for line in token['content']
         ])
+
+        # trim any white space at the beginning or end of the text block
+        text = text.strip()
 
         if text == '':
             # we want to avoid adding paragraph tags with no text inbetween.
