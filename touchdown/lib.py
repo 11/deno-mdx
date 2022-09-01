@@ -49,7 +49,7 @@ def map_decorations_to_tokens(decorations):
     decors_tag_map = {
         '*': 'b',
         '_': 'u',
-        '~': 'strikethrough',
+        '~': 's',
         '/': 'i',
         '`': 'code',
     }
