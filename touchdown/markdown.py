@@ -1,55 +1,34 @@
 import re
+import pdb
 from pathlib import Path
 from io import StringIO as StringBuilder
 
-from lib import readfile
-from lib import MARKDOWN_TOKENS as tks
-from errors import (
-    MarkdownSyntaxError,
-    OutputTypeError,
+from errors import MarkdownSyntaxError
+from constants import SPECIAL_CHARS, MARKDOWN_REGEXS
+from lib import (
+    readfile,
+    lookahead,
+    map_decorations_to_tokens,
 )
 
 
-def map_decorations_to_tokens(decorations):
-    """ take tokens inside """
-    decors_token_map = {
-        '*': 'bold',
-        '_': 'underline',
-        '~': 'strikethrough',
-        '/': 'italic',
-        '`': 'code',
-    }
-
-    decors_tag_map = {
-        '*': 'b',
-        '_': 'u',
-        '~': 'strikethrough',
-        '/': 'i',
-        '`': 'code',
-    }
-
-    return {
-        'token': [decors_token_map[decor] for decor in decorations],
-        'tag': [decors_tag_map[decor] for decor in decorations]
-    }
-
-
 class Markdown:
+    """ Markdown Tokenizer
+
+    The Markdown class's only responsibility is to tokenize the code within a markdown
+    file. Tokenize in this context means to catagorize each block of markdown code, and
+    store the relevant information into a dictionary. After reading an entire file, this
+    class will output a dictionary that contains meta data about the file that was just
+    parsed, and the tokenized markdown code.
+    """
+
     def __init__(self, file):
         self._filepath = Path(file)
         self._lineno = 0
-
         self._reader = None
 
     def __repr__(self):
         return f'File {self._filepath.name} - Lines processed {self._lineno}'
-
-    def __str__(self):
-        if self._output == 'html':
-            # TODO: pprint HTML
-            pass
-
-        return pformat(self.parse())
 
     def __iter__(self):
         self._reader = readfile(self._filepath)
@@ -62,20 +41,18 @@ class Markdown:
 
         self._lineno += 1
 
-        if re.match(tks['header'], line):
+        if re.match(MARKDOWN_REGEXS['header'], line):
             return self._parse_header(line)
-        elif re.match(tks['blockquote'], line):
+        elif re.match(MARKDOWN_REGEXS['blockquote'], line):
             return self._parse_blockquote(line)
-        elif re.match(tks['ordered_list'], line):
+        elif re.match(MARKDOWN_REGEXS['ordered_list'], line):
             return self._parse_ordered_list(self._reader)
-        elif re.match(tks['unordered_list'], line):
+        elif re.match(MARKDOWN_REGEXS['unordered_list'], line):
             return self._parse_unordered_list(self._reader)
-        elif re.match(tks['image'], line):
+        elif re.match(MARKDOWN_REGEXS['image'], line):
             return self._parse_image(line)
-        elif re.match(tks['codeblock'], line):
+        elif re.match(MARKDOWN_REGEXS['codeblock'], line):
             return self._parse_codeblock(line)
-        elif re.match(tks['link'], line):
-            return self._parse_image(line)
         else:
             return self._parse_paragraph(line)
 
@@ -90,7 +67,7 @@ class Markdown:
         }
 
     def _parse_header(self, line):
-        match = re.findall(tks['header'], line)
+        match = re.findall(MARKDOWN_REGEXS['header'], line)
         if len(match) != 1:
             raise MarkdownSyntaxError(self._file, self._lineno, '')
 
@@ -102,7 +79,7 @@ class Markdown:
         }
 
     def _parse_blockquote(self, line):
-        match = re.findall(tks['blockquote'], line)
+        match = re.findall(MARKDOWN_REGEXS['blockquote'], line)
         if len(match) != 1:
             raise MarkdownSyntaxError(self._file, self._lineno, '')
 
@@ -114,7 +91,7 @@ class Markdown:
         }
 
     def _parse_codeblock(self, line, reader):
-        match = re.findall(tks['codeblock'], line)
+        match = re.findall(MARKDOWN_REGEXS['codeblock'], line)
         if len(match) != 1:
             raise MarkdownSyntaxError(self._file, self._lineno, '')
 
@@ -137,10 +114,10 @@ class Markdown:
 
         while (line := next(reader, None)):
             match = None
-            if re.match(tks['ordered_list'], line):
-                match = re.findall(tks['ordered_list'], line)
-            elif re.match(tks['unordered_list'], line):
-                match = re.findall(tks['unordered_list'], line)
+            if re.match(MARKDOWN_REGEXS['ordered_list'], line):
+                match = re.findall(MARKDOWN_REGEXS['ordered_list'], line)
+            elif re.match(MARKDOWN_REGEXS['unordered_list'], line):
+                match = re.findall(MARKDOWN_REGEXS['unordered_list'], line)
             else:
                 reader.backstep()
                 break
@@ -164,7 +141,7 @@ class Markdown:
         return self._parse_list(reader, 'unordered_list', 'ul')
 
     def _parse_image(self, line):
-        match = re.findall(tks['image'], line)
+        match = re.findall(MARKDOWN_REGEXS['image'], line)
         if len(match) != 1:
             raise MarkdownSyntaxError(self._file, self._lineno, '')
 
@@ -245,50 +222,59 @@ class Markdown:
             output[-1]['content'] = text.getvalue()
             text.close()
 
-        return output, None
+        return output, idx
 
     def _parse_text(self, line):
-        decors = set(['*', '_', '~', '/', '`'])
-        output = {
-            'type': 'text',
-            'content': [],
-        }
+        content = []
+        builder = StringBuilder()
 
-        idx = 0
-        text = StringBuilder()
+        idx = 0 # current index
+        lag = '' # character behind `char` - defaults to empty string on first iteration
+        char = line[idx] # current character being parsed
         while idx < len(line):
+            lag = line[idx-1]
             char = line[idx]
-            if char not in decors:
-                text.write(char)
-            else:
-                # end current text node
-                if len(text.getvalue()) > 0:
-                    output['content'].append({
-                        'type': None,
-                        'tag': None,
-                        'content': text.getvalue(),
-                    })
 
-                # parse decoration node
+            if idx == len(line) - 1:
+                # if the loop is on its last iteration, append the last text
+                # node to the output, and close the string builder buffer
+                builder.write(char)
+                content.append({
+                    'type': None,
+                    'tag': None,
+                    'content': builder.getvalue()
+                })
+                builder.close()
+            elif char in SPECIAL_CHARS and lag != '\\' and lookahead(char, line[idx+1:]) == False:
+                # if a special character is found but there is no closing special
+                # character, stop parsing and print an MarkdownSyntaxError
+                raise MarkdownSyntaxError(self._file, self._lineno, f'{char} needs a matching closing character')
+            elif char in SPECIAL_CHARS and lag != '\\' and lookahead(char, line[idx+1:]):
+                # if reading a special character that isn't escaped and
+                # the string rest of the string contains a closing character,
+                # end the text current text node and start parsing deocrations
+                content.append({
+                    'type': None,
+                    'tag': None,
+                    'content': builder.getvalue()
+                })
+                builder.close()
+                builder = StringBuilder()
+
+                # `decorations` is a list of decoration text nodes to append to the output
+                # `seek` is the index that `idx` should jump forward to
                 decorations, seek = self._parse_decoration(line, seek=idx)
-                output['content'] += decorations
-                if seek is not None:
-                    idx = seek
-                    text.close()
-                    text = StringBuilder()
-                else:
-                    break
+                content += decorations
+                idx = seek
+            else:
+                builder.write(char)
 
             idx += 1
 
-        if len(text.getvalue()) > 0:
-            output['content'].append({
-                'content': text.getvalue(),
-                'tag': None,
-                'type': None,
-            })
-
-        return output
+        return {
+            'type': 'text',
+            'content': content,
+        }
 
     def _parse_paragraph(self, line):
         return {

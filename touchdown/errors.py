@@ -6,7 +6,7 @@ class MarkdownSyntaxError(Exception):
         super().__init__(message)
 
     def __str__(self):
-        return f'MarkdownSyntaxError in {self._file}: line {self._lineno} - {self._message}'
+        return f'MarkdownSyntaxError\n  "File {self._file}": line {self._lineno}\n    {self._message}'
 
 
 class OutputTypeError(Exception):

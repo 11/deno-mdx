@@ -1,28 +1,62 @@
 from pathlib import Path
 
 
-MARKDOWN_TOKENS = {
-    # https://www.debuggex.com/r/yJLwFDiFjDuifTSr
-    'header': r'^(#{1,6}?) (.*?)$',
+def lookahead(pattern, substr):
+    """ lookahead determines if a pattern shows up in a string
 
-    # https://www.debuggex.com/r/4xeF1p18gQjjhAe9
-    'blockquote': r'^\> [\s\S]*$',
+    TODO: this function does not correctly handle all escape character scenarios.
+          as an example, if we called `lookahead` with the following inputs:
 
-    # https://www.debuggex.com/r/s2BZUI9PedP0m5O-
-    'ordered_list': r'^\s*[0-9]{1,}. ([\s\S]*)\n$',
+            pattern = '*'
+            substr = 'this is a test string \\*'
 
-    # https://www.debuggex.com/r/9hQERKefFNj_3CsR
-    'unordered_list': r'^\s*- ([\s\S]*)\n$',
+          the double backslash before the * is escaping the backslash
+          character, NOT the * character. with the current implementation
+          this does not happen. this edge case is pretty rare and can mostly
+          be ignored - but should be resolved later
+    """
+    next_idx = substr.find(pattern)
+    if next_idx == -1:
+        # return false if there is no closing pattern
+        return False
 
-    # https://www.debuggex.com/r/u64sYbgHehYd5zet
-    'image': r'^!\[(.*)\]\((.*)\)$',
+    lag = substr[:next_idx]
+    if len(lag) == 0:
+        # if there are zero characters before the closing patter, this it's
+        # not possible for the pattern to be escaped. therefore, it's always
+        # a valid closing pattern
+        return True
+    elif len(lag) == 1 and substr[next_idx-1] == '\\':
+        # if the closing pattern is escaped with a `\` character, then
+        # that means the closing pattern should not be considered Mardown
+        # syntax, but rather an actual character that belonds in the text.
+        return False
 
-    # https://www.debuggex.com/r/dnmmbV9HXMOBFQPa
-    'link': r'^\[(.*)\]\((.*)\)$',
+    return True
 
-    # https://www.debuggex.com/r/7D4R7b9LVt8QbJ1l
-    'codeblock': r'^```$',
-}
+
+def map_decorations_to_tokens(decorations):
+    """ return correct token and tag values for text blocks wrapped in decorations """
+    decors_token_map = {
+        '*': 'bold',
+        '_': 'underline',
+        '~': 'strikethrough',
+        '/': 'italic',
+        '`': 'code',
+    }
+
+    decors_tag_map = {
+        '*': 'b',
+        '_': 'u',
+        '~': 'strikethrough',
+        '/': 'i',
+        '`': 'code',
+    }
+
+    return {
+        'token': [decors_token_map[decor] for decor in decorations],
+        'tag': [decors_tag_map[decor] for decor in decorations]
+    }
 
 
 def readfile(file: Path, filetype: str=None):
@@ -44,7 +78,7 @@ def readfile(file: Path, filetype: str=None):
 class _FileIterator:
     """ L1 Parser file iterator
 
-    This FileReader class allows the parsing loop to remember 1 line previous. If the parsing loop
+    This FileIterator class allows the parsing loop to remember 1 line previous. If the parsing loop
     wants to go back an iteration, the parsing loop can call `backstep()` to undo the last
     iteration. This is useful for parsing multiline blocks - such as lists and codeblocks that
     could potentially be several lines long.
