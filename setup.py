@@ -2,10 +2,11 @@
 
 from distutils.core import setup
 
-with open('README.md', r) as f:
+with open('README.md', 'r') as f:
     long_description = f.read()
 
-setup(name='Distutils',
+setup(
+    name='touchdown',
     version='1.0',
     description='Mdx compiler and CLI',
     long_description=long_description,
