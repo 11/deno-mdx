@@ -14,8 +14,8 @@ MARKDOWN_REGEXS = {
     # https://www.debuggex.com/r/u64sYbgHehYd5zet
     'image': r'^!\[(.*)\]\((.*)\)$',
 
-    # https://www.debuggex.com/r/dnmmbV9HXMOBFQPa
-    'link': r'^\[(.*)\]\((.*)\)$',
+    # https://www.debuggex.com/r/R5GTdhmtm06W8MZj
+    'link': r'\[(.+?)\]\((.+?)\)',
 
     # https://www.debuggex.com/r/dB-xS-Jo6RGl9NW2
     'codeblock_header': r'^(```)[\s]*?([a-zA-Z1-9]*)[\s]*?[\n\r]',

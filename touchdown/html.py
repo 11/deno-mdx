@@ -1,7 +1,3 @@
-import pdb
-from pprint import pprint
-
-
 class Html:
     def __init__(self, md_tokens):
         self._md_tokens = md_tokens
@@ -65,33 +61,37 @@ class Html:
 
     def _write_paragraph(self, token):
         tag = token['tag']
-        text = ''.join([
-            self._write_text(line)
-            for line in token['content']
+        line = ''.join([
+            self._write_text(text)
+            for text in token['content']
         ])
 
         # trim any white space at the beginning or end of the text block
-        text = text.strip()
+        line = line.strip()
 
-        if text == '':
+        if line == '':
             # we want to avoid adding paragraph tags with no text inbetween.
             # if the interpreter ever gets to this state, we return an empty string because
             # the empty string will be parsed out inside `interpret()` after we call `''.join()`
             # to combine the html together
             return ''
 
-        return f'<{tag}>{text}</{tag}>'
+        return f'<{tag}>{line}</{tag}>'
 
     def _write_text(self, token):
         text = []
         for text_block in token['content']:
             tags = text_block.get('tag', None)
+            token = text_block['type']
             content = text_block['content']
             if content == '\n':
                 # this if statement will skip over text blocks that only newlines.
                 # we append an empty string because empty strings are parsed out
                 # when we call `''.join()` at the end of the function
                 text.append('')
+            elif token == 'link':
+                link = self._write_link(text_block)
+                text.append(link)
             elif tags is None:
                 # an empty tag means that the `content` is not wrapped in bold, underline,
                 # italic, code, strikethrough, etc. rather the text_block is just plain
@@ -105,3 +105,15 @@ class Html:
                 text.append(f'{open_tags}{content}{close_tags}')
 
         return ''.join(text)
+
+    def _write_link(self, token):
+        tags = list(filter(lambda tag: tag != 'a', token['tag']))
+        open_tags = ''.join([ f'<{tag}>' for tag in tags ])
+        close_tags = ''.join([ f'</{tag}>' for tag in reversed(tags) ])
+
+        content = token['content']
+        href = '#' \
+            if token['href'] == '' \
+            else token['href']
+
+        return f'{open_tags}<a href="{href}"{content}</a>{close_tags}'

@@ -1,5 +1,4 @@
 import re
-import pdb
 from pathlib import Path
 from io import StringIO as StringBuilder
 
@@ -166,8 +165,87 @@ class Markdown:
             'alt': alt_text,
         }
 
-    def _parse_link(self, line):
-        pass
+    # TODO: WORKS BUT COULD BE BETTER
+    # make this function return the links and the indexes of the substrings
+    # that are inbetween the links
+    def _extract_links_from_text(self, text_token):
+        # iterator that iterates over a line of text and looks for the next
+        # start and end index of a link
+        link_itr = re.finditer(MARKDOWN_REGEXS['link'], text_token['content'])
+
+        # return relevant link info
+        return [
+            {
+                'type': 'link',
+                'tag': ['a'],
+                'start': match.start(0),
+                'end': match.end(0),
+                'content': match.groups()[0],
+                'href': match.groups()[1],
+            }
+            for match in link_itr
+        ]
+
+    # TODO: WORKS BUT COULD BE BETTER
+    def _parse_link(self, text_tokens):
+        i = 0
+        while i < len(text_tokens):
+            token = text_tokens[i]
+            link_ranges = self._extract_links_from_text(token)
+
+            j = 0
+
+            line = None
+            start = None
+            end = None
+            subcontent = []
+            while j < len(link_ranges):
+                line = token['content']
+
+                link_range = link_ranges[j]
+                start = link_range['start']
+                end = link_range['end']
+
+                if j == 0:
+                    before = token.copy()
+                    before['content'] = line[:start]
+
+                    link = link_range.copy()
+                    link['tag'] += [] if before['tag'] is None else before['tag']
+                    del link['start']
+                    del link['end']
+
+                    subcontent += [before, link]
+                else:
+                    _, prev_range_end = link_ranges[j-1]['end']
+
+                    before = token.copy()
+                    before['content'] = line[prev_range_end:start]
+
+                    link = link_range.copy()
+                    link['tag'] += [] if before['tag'] is None else before['tag']
+                    del link['start']
+                    del link['end']
+
+                    subcontent += [before, link]
+
+                j += 1
+
+            if len(subcontent) > 0:
+                # append any potential text that comes after the last link
+                last = token.copy()
+                last['content'] = line[end:]
+                subcontent.append(last)
+
+                prev = text_tokens[:i]
+                curr = subcontent
+                post = text_tokens[i+1:]
+                text_tokens = prev + curr + post
+                i += len(subcontent)
+            else:
+                i += 1
+
+        return text_tokens
 
     def _parse_decoration(self, line, seek=0):
         decorations = []
@@ -252,6 +330,7 @@ class Markdown:
             idx += 1
 
         content = list(filter(lambda token: token['content'] != '', content))
+        content = self._parse_link(content)
         return {
             'type': 'text',
             'content': content,
