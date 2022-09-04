@@ -1,6 +1,5 @@
-from .markdown import Markdown
-from .errors import MarkdownSyntaxError
+from markdown import Markdown
+from html import Html
 
-
-__all__ = ['Markdown', 'MarkdownSyntaxError']
+__all__ = ['Markdown', 'Html']
 
