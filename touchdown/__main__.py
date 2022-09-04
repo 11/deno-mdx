@@ -4,10 +4,10 @@ from json import dumps
 from pathlib import Path
 from pprint import pformat
 
-import commandline
-from html import Html
-from markdown import Markdown
-from errors import MarkdownSyntaxError
+import .commandline
+from .html import Html
+from .markdown import Markdown
+from .errors import MarkdownSyntaxError
 
 def _run(files=[], output='json', destination=None):
     total_time = 0

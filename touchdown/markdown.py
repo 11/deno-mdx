@@ -2,9 +2,9 @@ import re
 from pathlib import Path
 from io import StringIO as StringBuilder
 
-from errors import MarkdownSyntaxError
-from constants import SPECIAL_CHARS, MARKDOWN_REGEXS
-from lib import (
+from .errors import MarkdownSyntaxError
+from .constants import SPECIAL_CHARS, MARKDOWN_REGEXS
+from .lib import (
     readfile,
     lookahead,
     map_decorations_to_tokens,

@@ -13,7 +13,7 @@
 import unittest
 from pathlib import Path
 
-import commandline
+import .commandline
 from .markdown import Markdown as Md
 
 
