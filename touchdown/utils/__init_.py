@@ -1,5 +1,5 @@
-from file import readfile
-from parser import (
+from .file import readfile
+from .parser import (
     lookahead,
     map_decorations_to_tokens,
 ) 

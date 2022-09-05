@@ -13,8 +13,5 @@ setup(
     long_description=long_description,
     author='Doug Rudolph',
     url='https://github.com/11/touchdown',
-    packages=(
-        find_packages() +
-        find_packages(where='./touchdown/utils')
-    ),
+    packages=find_packages()
  )
