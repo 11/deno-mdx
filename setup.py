@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from setuptools import find_packages
+import setuptools
 from distutils.core import setup
 
 with open('README.md', 'r') as f:
