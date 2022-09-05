@@ -4,8 +4,8 @@ from io import StringIO as StringBuilder
 
 from .errors import MarkdownSyntaxError
 from .constants import SPECIAL_CHARS, MARKDOWN_REGEXS
-from .lib import (
-    readfile,
+from .utils.file import readfile
+from .utils.parser import (
     lookahead,
     map_decorations_to_tokens,
 )
@@ -22,9 +22,13 @@ class Markdown:
     """
 
     def __init__(self, file):
+        # class variables
         self._filepath = Path(file)
         self._lineno = 0
         self._reader = None
+
+        # properties 
+        self._markdown = self.run()
 
     def __repr__(self):
         return f'File {self._filepath.name} - Lines processed {self._lineno}'
@@ -39,6 +43,7 @@ class Markdown:
             raise StopIteration
 
         self._lineno += 1
+
 
         if re.match(MARKDOWN_REGEXS['header'], line):
             return self._parse_header(line)
@@ -56,14 +61,16 @@ class Markdown:
             return self._parse_paragraph(line)
 
     @property
-    def filename(self):
-        return self._filepath.name
+    def markdown(self):
+        return self._markdown
 
-    def tokenize(self):
-        return {
+    def run(self):
+        markdown = {
             'filename': self._filepath.name,
             'content': [token for token in self],
         }
+
+        return markdown
 
     def _parse_header(self, line):
         match = re.findall(MARKDOWN_REGEXS['header'], line)

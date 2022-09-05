@@ -1,14 +1,18 @@
 class Html:
     def __init__(self, md_tokens):
+        # class variables
         self._md_tokens = md_tokens
         self._content = None
 
+        # properties
+        self._html = self.run()
+
     def __iter__(self):
-        self._contents = iter(self._md_tokens['content'])
+        self._content = iter(self._md_tokens['content'])
         return self
 
     def __next__(self):
-        token = next(self._contents, None)
+        token = next(self._content, None)
         if not token:
             raise StopIteration
 
@@ -25,9 +29,13 @@ class Html:
         elif token['type'] == 'codeblock':
             return self._write_codeblock(token)
 
-    def interpret(self):
+    def run(self):
         html = '\n'.join([element for element in self])
         return html
+
+    @property
+    def html(self):
+        return self._html
 
     def _write_header(self, token):
         tag = token['tag']
