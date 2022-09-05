@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import setuptools
+from setuptools import find_packages
 from distutils.core import setup
 
 with open('README.md', 'r') as f:
@@ -13,5 +13,8 @@ setup(
     long_description=long_description,
     author='Doug Rudolph',
     url='https://github.com/11/touchdown',
-    packages=setuptools.find_packages(),
+    packages=(
+        find_packages() +
+        find_packages(where='./touchdown/utils')
+    ),
  )
