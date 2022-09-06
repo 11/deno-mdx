@@ -37,17 +37,15 @@ def map_decorations_to_tokens(decorations):
     """ return correct token and tag values for text blocks wrapped in decorations """
     decors_token_map = {
         '*': 'bold',
-        '_': 'underline',
+        '_': 'italic',
         '~': 'strikethrough',
-        '/': 'italic',
         '`': 'code',
     }
 
     decors_tag_map = {
         '*': 'b',
-        '_': 'u',
+        '_': 'i',
         '~': 's',
-        '/': 'i',
         '`': 'code',
     }
 
