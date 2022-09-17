@@ -33,7 +33,7 @@ def lookahead(pattern, substr):
     return True
 
 
-def map_decorations_to_tokens(decorations):
+def map_decorations_to_tokens(decorations: set):
     """ return correct token and tag values for text blocks wrapped in decorations """
     decors_token_map = {
         '*': 'bold',
@@ -48,6 +48,11 @@ def map_decorations_to_tokens(decorations):
         '~': 's',
         '`': 'code',
     }
+
+    # sets in python do not append in the same order every time.
+    # to ensure that decorations are applied in a the same order
+    # each time we sort the set of decorations
+    decorations = sorted(decorations)
 
     return {
         'token': [decors_token_map[decor] for decor in decorations],

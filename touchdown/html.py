@@ -106,6 +106,9 @@ class Html:
                 # text
                 text.append(content)
             else:
+                # sort the list of tags to ensure the output HTML is always consistent
+                tags = sorted(tags)
+
                 # in the event there are tags, we need to wrap the `content` of the
                 # text block with the open and closed tags
                 open_tags = ''.join([ f'<{tag}>' for tag in tags ])
