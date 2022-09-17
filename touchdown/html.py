@@ -80,7 +80,7 @@ class Html:
         if line == '':
             # we want to avoid adding paragraph tags with no text inbetween.
             # if the interpreter ever gets to this state, we return an empty string because
-            # the empty string will be parsed out inside `interpret()` after we call `''.join()`
+            # the empty string will be removed inside `interpret()` after we call `''.join()`
             # to combine the html together
             return ''
 
@@ -93,17 +93,14 @@ class Html:
             token = text_block['type']
             content = text_block['content']
             if content == '\n':
-                # this if statement will skip over text blocks that only newlines.
-                # we append an empty string because empty strings are parsed out
-                # when we call `''.join()` at the end of the function
-                text.append('')
+                # this if statement will skip over text blocks that only contain newlines.
+                continue
             elif token == 'link':
                 link = self._write_link(text_block)
                 text.append(link)
             elif tags is None:
-                # an empty tag means that the `content` is not wrapped in bold, underline,
-                # italic, code, strikethrough, etc. rather the text_block is just plain
-                # text
+                # an empty `tags` list means that the `content` is not wrapped in bold, underline,
+                # italic, code, strikethrough, etc. thus the `text_block` is just plain text
                 text.append(content)
             else:
                 # sort the list of tags to ensure the output HTML is always consistent

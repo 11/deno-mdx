@@ -45,7 +45,6 @@ class Markdown:
 
         self._lineno += 1
 
-
         if re.match(MARKDOWN_REGEXS['header'], line):
             return self._parse_header(line)
         elif re.match(MARKDOWN_REGEXS['blockquote'], line):
@@ -68,7 +67,11 @@ class Markdown:
     def run(self):
         markdown = {
             'filename': self._filepath.name,
-            'content': [token for token in self],
+            'content': [
+                token 
+                for token in self 
+                if token is not None
+            ],
         }
 
         return markdown
@@ -306,6 +309,7 @@ class Markdown:
             lag = line[idx-1] if idx > 0 else ''
             char = line[idx]
 
+
             if idx == len(line) - 1:
                 # if the loop is on its last iteration, append the last text
                 # node to the output, and close the string builder buffer
@@ -350,6 +354,11 @@ class Markdown:
         }
 
     def _parse_paragraph(self, line):
+        # check if the line only contains a newline character. if so we
+        # do nothing and return None
+        if line == '\n':
+            return None
+
         return {
             'type': 'paragraph',
             'tag': 'p',
