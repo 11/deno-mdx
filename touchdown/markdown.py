@@ -1,4 +1,5 @@
 import re
+import pdb
 from pathlib import Path
 from io import StringIO as StringBuilder
 
@@ -173,7 +174,7 @@ class Markdown:
         }
 
     # TODO: WORKS BUT COULD BE BETTER
-    # make this function return the links and the indexes of the substrings
+    # make this function return the links and the indices of the substrings
     # that are inbetween the links
     def _extract_links_from_text(self, text_token):
         # iterator that iterates over a line of text and looks for the next
@@ -281,6 +282,11 @@ class Markdown:
             idx += 1
 
             if not (idx < len(line) and len(active) > 0):
+                # this loop HAS to run 1 extra iteration to know that we've reached the end 
+                # of the line, or to process any unclosed special characters. because of 
+                # this, we subtract 1 to return the correct index to seek to in `_parse_text`
+                idx -= 1
+
                 break
 
         if len(active) > 0:
