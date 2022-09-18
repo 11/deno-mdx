@@ -1,15 +1,32 @@
 import unittest
 from pathlib import Path
 
+from touchdown import markdown, html
 
-TESTCASE_DIR = '../testcases'
+
+TESTCASE_DIR = '../testcases/header'
 
 
 class TestHeader(unittest.TestCase):
-    def test_valid_headers(self):
-        test_file = f'{TESTCASE_DIR}/test_header.md'
-        tokens = Md(test_file).markdown
-        expected_output = {
+    def test_header_inside_header_markdown(self):
+        test_file = f'{TESTCASE_DIR}/test_header_inside_header.md'
+        assert False
+
+    def test_header_inside_header_html(self):
+        test_file = f'{TESTCASE_DIR}/test_header_inside_header.md'
+        assert False
+
+    def test_invalid_headers_markdown(self):
+        test_file = f'{TESTCASE_DIR}/test_invalid_headers.md'
+        assert False
+
+    def test_invalid_headers_html(self):
+        test_file = f'{TESTCASE_DIR}/test_invalid_headers.md'
+        assert False
+
+    def test_valid_headers_markdown(self):
+        test_file = f'{TESTCASE_DIR}/test_valid_headers.md'
+        expected_markdown = {
             'filename': header_test.filename,
             'content': [{
                 'token': 'header',
@@ -42,10 +59,8 @@ class TestHeader(unittest.TestCase):
                 'content': 'header 6'
             }]
         }
-        assert tokens == expected_output
+        assert markdown(test_file) == expected_markdown
 
-    def test_invalid_headers(self):
-        test_file = f'{TESTCASE_DIR}/test_invalid_headers.md'
-        tokens = Md(test_file).markdown
-
-        assert tokens == False
+    def test_valid_headers_html(self):
+        test_file = f'{TESTCASE_DIR}/test_valid_headers.md'
+        assert False
