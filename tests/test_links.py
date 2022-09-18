@@ -6,6 +6,9 @@ TESTCASE_DIR = '../testcases/link'
 
 
 class TestLink(unittest.TestCase):
+    def test_link_around_image(self):
+        test_file = Path(f'{TESTCASE_DIR}/') 
+
     def test_link_in_blockquote_markdown(self):
         test_file = Path(f'{TESTCASE_DIR}/test_link_in_blockquote')
         assert False
