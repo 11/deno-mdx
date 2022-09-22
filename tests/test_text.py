@@ -12,6 +12,7 @@ TESTCASE_DIR = './testcases/text'
 class TestText(unittest.TestCase):
     def test_formatted_text_nonoverlap_markdown(self):
         """ testign text with non-overlapping tags """
+
         expected_markdown = {
             "content": [
                 {
@@ -64,12 +65,14 @@ class TestText(unittest.TestCase):
 
     def test_formatted_text_nonoverlap_html(self):
         """ testing text with non-overlapping tags """
+
         test_file = Path(f'{TESTCASE_DIR}/test_formatted_text_nonoverlap.md')
         expected_html = '<p><s>Lorem ipsum</s> do <code>lor</code> sit <b>amet, consectetur adipiscing elit,</b> sed <i>do eiusmod tempor incididunt ut labore et dolore magna</i> aliqua.</p>'
         assert html(test_file) == expected_html
 
     def test_formatted_text_overlap_markdown(self):
         """ testing formatted text with overlaping tags"""
+
         expected_markdown = {
             "content": [
                 {
@@ -144,6 +147,7 @@ class TestText(unittest.TestCase):
 
     def test_multiline_text_markdown(self):
         """ tests that multiple lines of plane text are converted to several paragraph tags """
+
         test_file = Path(f'{TESTCASE_DIR}/test_multiline_text.md')
         expected_markdown = {
             "content": [
