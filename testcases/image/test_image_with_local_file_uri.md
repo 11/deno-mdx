@@ -1,1 +1,1 @@
-![eagle])(/testcases/image/eagle.png)
+![eagle](/testcases/image/eagle.png)

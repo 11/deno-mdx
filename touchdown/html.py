@@ -52,6 +52,16 @@ class Html:
         text = self._write_text(content)
         return f'<{tag}>{text}</{tag}>'
 
+    def _write_image(self, token):
+        tag = token['tag']
+        alt_text = token['alt']
+        uri = token['uri']
+
+        if uri is None or uri == '':
+            return f'<{tag} alt="{alt_text}" src="#" />'
+
+        return f'<{tag} alt="{alt_text}" src="{uri}" />'
+
     def _write_codeblock(self, token):
         tag = token['tag']
         language = token['language']

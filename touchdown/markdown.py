@@ -184,11 +184,11 @@ class Markdown:
         if len(match) != 1:
             raise MarkdownSyntaxError(self._filepath, self._lineno, '')
 
-        uri, alt_text = match[0]
+        alt_text, uri = match[0]
         return {
             'type': 'image',
             'tag': 'img',
-            'url': uri,
+            'uri': uri,
             'alt': alt_text,
         }
 
