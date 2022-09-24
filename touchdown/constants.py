@@ -25,6 +25,9 @@ MARKDOWN_REGEXS = {
 
     # TODO: need to add support for latex math syntax
     'math': r'r\$\$$',
+
+    # https://www.debuggex.com/r/v_AE_qRrG_tOMTNc
+    'paragraph_id': r'^{([a-zA-Z0-9_\-]*)}',
 }
 
 

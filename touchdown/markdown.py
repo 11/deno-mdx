@@ -57,6 +57,8 @@ class Markdown:
             return self._parse_image(line)
         elif re.match(MARKDOWN_REGEXS['codeblock_header'], line):
             return self._parse_codeblock(self._reader)
+        elif re.match(MARKDOWN_REGEXS['paragraph_id'], line):
+            return self._parse_paragraph(line, includes_id=True)
         else:
             return self._parse_paragraph(line)
 
@@ -353,13 +355,28 @@ class Markdown:
             'content': content,
         }
 
-    def _parse_paragraph(self, line):
+    def _parse_paragraph(self, line, includes_id=False):
         # check if the line only contains a newline character. if so we
         # do nothing and return None
         if line == '\n':
             return None
 
+        # check if the paragraph begins with an ID. if so, parse out the id
+        # before parsing text
+        paragraph_id = None
+        if includes_id:
+            # grab the paragraph ID
+            match = re.findall(MARKDOWN_REGEXS['paragraph_id'], line)
+            if len(match) != 1:
+                raise MarkdownSyntaxError(self._filepath, self._lineno, '')
+            paragraph_id = match[0]
+
+            # advance the line foward past the ID
+            seek = line.find('}') + 1
+            line = line[seek:].lstrip()
+
         return {
+            'id': paragraph_id,
             'type': 'paragraph',
             'tag': 'p',
             'content': [self._parse_text(line)],

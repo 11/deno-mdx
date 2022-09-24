@@ -69,6 +69,7 @@ class Html:
 
     def _write_paragraph(self, token):
         tag = token['tag']
+        paragraph_id = token['id']
         line = ''.join([
             self._write_text(text)
             for text in token['content']
@@ -82,7 +83,11 @@ class Html:
             # if the interpreter ever gets to this state, we return an empty string because
             # the empty string will be removed inside `interpret()` after we call `''.join()`
             # to combine the html together
+            # -- TODO: try just returning None
             return ''
+
+        if paragraph_id:
+            return f'<{tag} id="{paragraph_id}">{line}</{tag}>'
 
         return f'<{tag}>{line}</{tag}>'
 
