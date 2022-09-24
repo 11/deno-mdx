@@ -40,8 +40,11 @@ class Html:
     def _write_header(self, token):
         tag = token['tag']
         content = token['content']
+        header_id = token['id']
+
         text = self._write_text(content)
-        return f'<{tag}>{text}</{tag}>'
+
+        return f'<{tag} id="{header_id}">{text}</{tag}>'
 
     def _write_blockquote(self, token):
         tag = token['tag']

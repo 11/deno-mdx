@@ -8,6 +8,7 @@ from .constants import SPECIAL_CHARS, MARKDOWN_REGEXS
 from .utils.file import readfile
 from .utils.parser import (
     lookahead,
+    create_html_tag_id,
     map_decorations_to_tokens,
 )
 
@@ -45,7 +46,9 @@ class Markdown:
 
         self._lineno += 1
 
-        if re.match(MARKDOWN_REGEXS['header'], line):
+        if re.match(MARKDOWN_REGEXS['header_id'], line):
+            return self._parse_header(line, includes_id=True)
+        elif re.match(MARKDOWN_REGEXS['header'], line):
             return self._parse_header(line)
         elif re.match(MARKDOWN_REGEXS['blockquote'], line):
             return self._parse_blockquote(line)
@@ -78,13 +81,24 @@ class Markdown:
 
         return markdown
 
-    def _parse_header(self, line):
-        match = re.findall(MARKDOWN_REGEXS['header'], line)
-        if len(match) != 1:
+    def _parse_header(self, line, includes_id=False):
+        match = re.findall(MARKDOWN_REGEXS['header_id'], line) \
+            if includes_id \
+            else re.findall(MARKDOWN_REGEXS['header'], line)
+
+        if includes_id and len(match) != 1 and len(match[0]) != 3:
+            # raising error if a header with an ID is incorrectly formatted
+            raise MarkdownSyntaxError(self._filepath, self._lineno, '')
+        elif not includes_id and len(match) != 1 and len(match[0]) != 2:
+            # raising error if a header is incorrectly formatted
             raise MarkdownSyntaxError(self._filepath, self._lineno, '')
 
-        header, content = match[0]
+        header = match[0][0]
+        header_id = create_html_tag_id(match[0][1])
+        content = match[0][-1]
+
         return {
+            'id': header_id,
             'type': 'header',
             'tag': f'h{len(header)}',
             'content': self._parse_text(content),

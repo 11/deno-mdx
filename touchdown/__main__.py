@@ -1,7 +1,7 @@
 import sys
 from json import dumps
-from pathlib import Path
 from pprint import pformat
+from pathlib import Path
 from argparse import ArgumentParser
 
 from .html import Html

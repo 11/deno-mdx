@@ -35,6 +35,7 @@ def lookahead(pattern, substr):
 
 def map_decorations_to_tokens(decorations: set):
     """ return correct token and tag values for text blocks wrapped in decorations """
+
     decors_token_map = {
         '*': 'bold',
         '_': 'italic',
@@ -56,5 +57,28 @@ def map_decorations_to_tokens(decorations: set):
 
     return {
         'token': [decors_token_map[decor] for decor in decorations],
-        'tag': [decors_tag_map[decor] for decor in decorations]
+        'tag': [decors_tag_map[decor] for decor in decorations],
     }
+
+
+def create_html_tag_id(tag_id: str):
+    """ alphanumerics, `-`, and `_` are the only valid characters in a html ID """
+
+    # filter string to only contain valid characters for an id
+    sanitize_valid_chars = lambda char: \
+        char.isalpha() \
+        or char.isnumeric() \
+        or char in ['_', '-', ' ']
+    valid_chars = ''.join(filter(sanitize_valid_chars, tag_id))
+
+
+    # strip any extra whitespace between each word
+    strip_whitespace = list(map(lambda word: word.strip(), valid_chars.split(' ')))
+
+    # strip empty strings
+    strip_empty_strings = list(filter(lambda word: word != '', strip_whitespace))
+
+    # place a `-` between each valid collection of words
+    valid_id = '-'.join(strip_empty_strings)
+
+    return valid_id

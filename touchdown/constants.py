@@ -2,6 +2,11 @@ MARKDOWN_REGEXS = {
     # https://www.debuggex.com/r/yJLwFDiFjDuifTSr
     'header': r'^(#{1,6}?) (.*?)$',
 
+    # https://www.debuggex.com/r/LuSPWfF7IrFnoG6-
+    # making this a separate regex from the original header regex
+    # to make debugging easier
+    'header_id': r'^(#{1,6}?) {([a-zA-Z0-9_\-]*)} (.*?)$',
+
     # https://www.debuggex.com/r/CtnsXDb7jI1pMumX
     'blockquote': r'^\> [\s]*(.*)$',
 
