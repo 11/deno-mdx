@@ -124,4 +124,4 @@ class Html:
             if token['href'] == '' \
             else token['href']
 
-        return f'{open_tags}<a href="{href}"{content}</a>{close_tags}'
+        return f'{open_tags}<a href="{href}">{content}</a>{close_tags}'

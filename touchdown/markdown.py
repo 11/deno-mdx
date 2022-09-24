@@ -228,7 +228,7 @@ class Markdown:
 
                     subcontent += [before, link]
                 else:
-                    _, prev_range_end = link_ranges[j-1]['end']
+                    prev_range_end = link_ranges[j-1]['end']
 
                     before = token.copy()
                     before['content'] = line[prev_range_end:start]
