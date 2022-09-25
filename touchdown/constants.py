@@ -2,9 +2,9 @@ MARKDOWN_REGEXS = {
     # https://www.debuggex.com/r/yJLwFDiFjDuifTSr
     'header': r'^(#{1,6}?) (.*?)$',
 
-    # https://www.debuggex.com/r/LuSPWfF7IrFnoG6-
     # making this a separate regex from the original header regex
     # to make debugging easier
+    # https://www.debuggex.com/r/LuSPWfF7IrFnoG6-
     'header_id': r'^(#{1,6}?) {([a-zA-Z0-9_\-]*)} (.*?)$',
 
     # https://www.debuggex.com/r/CtnsXDb7jI1pMumX
@@ -29,7 +29,9 @@ MARKDOWN_REGEXS = {
     'codeblock_footer': r'^```[\n\r]*?',
 
     # TODO: need to add support for latex math syntax
-    'math': r'r\$\$$',
+    'mathblock': r'^\$\$[\n\r]*?',
+
+    'math': r'\$(.+?)\$',
 
     # https://www.debuggex.com/r/v_AE_qRrG_tOMTNc
     'paragraph_id': r'^{([a-zA-Z0-9_\-]*)}',

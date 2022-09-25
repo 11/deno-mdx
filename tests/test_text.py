@@ -1,3 +1,4 @@
+import pdb
 import unittest
 from pprint import pprint
 from pathlib import Path
@@ -12,6 +13,7 @@ class TestText(unittest.TestCase):
     def test_formatted_text_nonoverlap_markdown(self):
         """ testign text with non-overlapping tags """
 
+        test_file = Path(f'{TESTCASE_DIR}/test_formatted_text_nonoverlap.md')
         expected_markdown = {
             "content": [
                 {
@@ -52,14 +54,13 @@ class TestText(unittest.TestCase):
                             "type": "text",
                         }
                     ],
+                    "id": None,
                     "tag": "p",
                     "type": "paragraph",
                 }
             ],
             "filename": "test_formatted_text_nonoverlap.md",
         }
-
-        test_file = Path(f'{TESTCASE_DIR}/test_formatted_text_nonoverlap.md')
         assert markdown(test_file) == expected_markdown
 
     def test_formatted_text_nonoverlap_html(self):
@@ -72,6 +73,7 @@ class TestText(unittest.TestCase):
     def test_formatted_text_overlap_markdown(self):
         """ testing formatted text with overlaping tags"""
 
+        test_file = Path(f'{TESTCASE_DIR}/test_formatted_text_overlap.md')
         expected_markdown = {
             "content": [
                 {
@@ -127,14 +129,13 @@ class TestText(unittest.TestCase):
                             "type": "text",
                         }
                     ],
+                    'id': None,
                     "tag": "p",
                     "type": "paragraph",
                 }
             ],
             "filename": "test_formatted_text_overlap.md",
         }
-         
-        test_file = Path(f'{TESTCASE_DIR}/test_formatted_text_overlap.md')
         assert markdown(test_file) == expected_markdown
 
     def test_formatted_text_overlap_html(self):
@@ -168,6 +169,7 @@ class TestText(unittest.TestCase):
                             "type": "text",
                         }
                     ],
+                    'id': None,
                     "tag": "p",
                     "type": "paragraph",
                 },
@@ -188,6 +190,7 @@ class TestText(unittest.TestCase):
                             "type": "text",
                         }
                     ],
+                    'id': None,
                     "tag": "p",
                     "type": "paragraph",
                 },
@@ -212,6 +215,7 @@ class TestText(unittest.TestCase):
                             "type": "text",
                         }
                     ],
+                    'id': None,
                     "tag": "p",
                     "type": "paragraph",
                 },
@@ -226,6 +230,137 @@ class TestText(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_multiline_text.md')
         expected_html = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>\n<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>'
+        assert html(test_file) == expected_html
+
+    def test_mutliple_inline_mathblocks_markdown(self):
+        """ test that multiple inline mathblocks parsing takes care of off by 1's and decorative text still works """
+
+        test_file = Path(f'{TESTCASE_DIR}/test_multiple_inline_mathblocks.md')
+        expected_markdown = {
+            "content": [
+                {
+                    "content": [
+                        {
+                            "content": [
+                                {"content": "If ", "tag": None, "type": None},
+                                {
+                                    "content": "\\hat{\\mathcal{E}}_D(x) " "\\leq \\varepsilon",
+                                    "tag": ["span"],
+                                    "type": "math",
+                                },
+                                {
+                                    "content": ", we say the model is ",
+                                    "tag": None,
+                                    "type": None,
+                                },
+                                {"content": "\\varepsilon", "tag": ["span"], "type": "math"},
+                                {"content": "-", "tag": None, "type": None},
+                                {
+                                    "content": "confident",
+                                    "tag": ["b"],
+                                    "token": ["bold"],
+                                    "type": "text",
+                                },
+                                {
+                                    "content": " in its prediction at ",
+                                    "tag": None,
+                                    "type": None,
+                                },
+                                {"content": "x", "tag": ["span"], "type": "math"},
+                                {
+                                    "content": "; otherwise, the model is ",
+                                    "tag": None,
+                                    "type": None,
+                                },
+                                {"content": "\\varepsilon", "tag": ["span"], "type": "math"},
+                                {"content": "-", "tag": None, "type": None},
+                                {
+                                    "content": "uncertain",
+                                    "tag": ["b"],
+                                    "token": ["bold"],
+                                    "type": "text",
+                                },
+                                {"content": ". The ", "tag": None, "type": None},
+                                {"content": "\\varepsilon", "tag": ["span"], "type": "math"},
+                                {"content": "-", "tag": None, "type": None},
+                                {
+                                    "content": "confidence region",
+                                    "tag": ["b"],
+                                    "token": ["bold"],
+                                    "type": "text",
+                                },
+                                {
+                                    "content": " is defined as the set of "
+                                    "all points where we are "
+                                    "confident, denoted ",
+                                    "tag": None,
+                                    "type": None,
+                                },
+                                {
+                                    "content": "\\hat{C}_\\varepsilon = "
+                                    "\\{ x \\in X \\mid "
+                                    "\\hat{\\mathcal{E}}_D(x) "
+                                    "\\leq \\varepsilon \\} "
+                                    "\\subseteq X",
+                                    "tag": ["span"],
+                                    "type": "math",
+                                },
+                                {"content": ".", "tag": None, "type": None},
+                            ],
+                            "type": "text",
+                        }
+                    ],
+                    "id": None,
+                    "tag": "p",
+                    "type": "paragraph",
+                }
+            ],
+            "filename": "test_multiple_inline_mathblocks.md",
+        }
+        assert markdown(test_file) == expected_markdown
+
+    def test_mutliple_inline_mathblocks_html(self):
+        """ test that multiple inline mathblocks parsing takes care of off by 1's and decorative text still works """
+
+        test_file = Path(f'{TESTCASE_DIR}/test_multiple_inline_mathblocks.md')
+        expected_html = '<p>If <span>\\hat{\\mathcal{E}}_D(x) \\leq \\varepsilon</span>, we say the model is <span>\\varepsilon</span>-<b>confident</b> in its prediction at <span>x</span>; otherwise, the model is <span>\\varepsilon</span>-<b>uncertain</b>. The <span>\\varepsilon</span>-<b>confidence region</b> is defined as the set of all points where we are confident, denoted <span>\\hat{C}_\\varepsilon = \\{ x \\in X \\mid \\hat{\\mathcal{E}}_D(x) \\leq \\varepsilon \\} \\subseteq X</span>.</p>'
+        assert html(test_file) == expected_html
+
+
+    def test_single_inline_mathblock_markdown(self):
+        """ santiy check that a single inline mathblock can be parsed """
+
+        test_file = Path(f'{TESTCASE_DIR}/test_single_inline_mathblock.md')
+        expected_markdown = {
+            "content": [
+                {
+                    "content": [
+                        {
+                            "content": [
+                                {"content": "this is some math: ", "tag": None, "type": None},
+                                {
+                                    "content": "\\mathcal{E}(y,y') = 0 " "\\iff y = y'",
+                                    "tag": ["span"],
+                                    "type": "math",
+                                },
+                            ],
+                            "type": "text",
+                        }
+                    ],
+                    "id": None,
+                    "tag": "p",
+                    "type": "paragraph",
+                }
+            ],
+            "filename": "test_single_inline_mathblock.md",
+        }
+        assert markdown(test_file) == expected_markdown
+
+    def test_single_inline_mathblock_html(self):
+        """ santiy check that a single inline math block can be parsed """
+
+        test_file = Path(f'{TESTCASE_DIR}/test_single_inline_mathblock.md')
+        expected_html = '<p>this is some math: <span>\\mathcal{E}(y,y\') = 0 \\iff y = y\'</span></p>'
         assert html(test_file) == expected_html
 
     def test_singleline_text_markdown(self):
@@ -250,6 +385,7 @@ class TestText(unittest.TestCase):
                             "type": "text",
                         }
                     ],
+                    'id': None,
                     "tag": "p",
                     "type": "paragraph",
                 }

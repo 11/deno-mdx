@@ -1,5 +1,7 @@
 import re
+import pdb
 from pathlib import Path
+from pprint import pprint
 from io import StringIO as StringBuilder
 
 from .errors import MarkdownSyntaxError
@@ -59,6 +61,8 @@ class Markdown:
             return self._parse_image(line)
         elif re.match(MARKDOWN_REGEXS['codeblock_header'], line):
             return self._parse_codeblock(self._reader)
+        elif re.match(MARKDOWN_REGEXS['mathblock'], line):
+            return self._parse_mathblock(self._reader)
         elif re.match(MARKDOWN_REGEXS['paragraph_id'], line):
             return self._parse_paragraph(line, includes_id=True)
         else:
@@ -92,15 +96,23 @@ class Markdown:
             # raising error if a header is incorrectly formatted
             raise MarkdownSyntaxError(self._filepath, self._lineno, '')
 
+
         header = match[0][0]
-        header_id = create_html_tag_id(match[0][1])
-        content = match[0][-1]
+        text_token = self._parse_text(match[0][-1])
+
+        # need to join all the actual text in the header node 
+        # before generating an ID
+        header_id_text= ''.join([
+            token['content']
+            for token in text_token['content'] 
+        ])
+        header_id = create_html_tag_id(header_id_text)
 
         return {
             'id': header_id,
             'type': 'header',
             'tag': f'h{len(header)}',
-            'content': self._parse_text(content),
+            'content': text_token,
         }
 
     def _parse_blockquote(self, line):
@@ -114,6 +126,21 @@ class Markdown:
             'tag': 'blockquote',
             'content': self._parse_text(content),
         }
+
+    def _parse_mathblock(self, reader):
+        output = {
+            'type': 'mathblock',
+            'tag': 'div',
+            'content': [],
+        }
+
+        while (line := next(reader, None)):
+            if re.findall(MARKDOWN_REGEXS['mathblock'], line):
+                break
+            else:
+                output['content'].append(line)
+
+        return output
 
     def _parse_codeblock(self, reader):
         output = {
@@ -191,6 +218,49 @@ class Markdown:
             'alt': alt_text,
         }
 
+    def _extract_maths_from_text(self, line):
+        maths_itr = re.finditer(MARKDOWN_REGEXS['math'], line)
+        return [
+            {
+                'type': 'math',
+                'tag': ['span'],
+                'start': match.start(0),
+                'end': match.end(0),
+                'content': match.groups()[0],
+            }
+            for match in maths_itr
+        ]
+
+    def _parse_maths(self, line):
+        maths = self._extract_maths_from_text(line)
+        if len(maths) == 0:
+            return [line]
+
+        content = []
+        idx = 0
+        while idx < len(maths):
+            curr = maths[idx] 
+
+            start = None
+            end = None
+            if idx == 0:
+                start = 0
+                end = curr['start']
+            else:
+                start = content[-1]['end']
+                end = curr['start']
+
+            text = line[start:end]
+            content.append(text)
+            content.append(curr)
+
+            idx += 1
+
+        content.append(line[content[-1]['end']:])
+        content = list(filter(lambda string: string != '', content))
+
+        return content
+
     # TODO: WORKS BUT COULD BE BETTER
     # make this function return the links and the indices of the substrings
     # that are inbetween the links
@@ -213,10 +283,15 @@ class Markdown:
         ]
 
     # TODO: WORKS BUT COULD BE BETTER
-    def _parse_link(self, text_tokens):
+    def _parse_links(self, text_tokens):
         i = 0
         while i < len(text_tokens):
             token = text_tokens[i]
+
+            if token['type'] == 'math':
+                i += 1
+                continue
+
             link_ranges = self._extract_links_from_text(token)
 
             j = 0
@@ -315,15 +390,13 @@ class Markdown:
 
         return decorations, idx
 
-    def _parse_text(self, line):
-        content = []
+    def _parse_characters(self, line):
         builder = StringBuilder()
-
+        content = []
         idx = 0
         while idx < len(line):
             lag = line[idx-1] if idx > 0 else ''
             char = line[idx]
-
 
             if idx == len(line) - 1:
                 # if the loop is on its last iteration, append the last text
@@ -338,7 +411,7 @@ class Markdown:
             elif char in SPECIAL_CHARS and lag != '\\' and lookahead(char, line[idx+1:]) == False:
                 # if a special character is found but there is no closing special
                 # character, stop parsing and print a MarkdownSyntaxError
-                raise MarkdownSyntaxError(self._filepath, self._lineno, f'{char} needs a matching closing character')
+                raise MarkdownSyntaxError(self._filepath, self._lineno, f'`{char}` needs a matching closing character')
             elif char in SPECIAL_CHARS and lag != '\\' and lookahead(char, line[idx+1:]):
                 # if reading a special character that isn't escaped and
                 # the rest of the string contains a closing character,
@@ -361,11 +434,31 @@ class Markdown:
 
             idx += 1
 
-        content = list(filter(lambda token: token['content'] != '', content))
-        content = self._parse_link(content)
+        return list(filter(lambda token: token['content'] != '', content))
+
+    def _parse_text(self, line):
+        # must parse inline mathblocks first because these math blocks
+        # contain math characters that are also include decoration characters
+        math = self._parse_maths(line)
+
+        # parse normal text and decorations and while parsing skip over
+        # inline math nodes that have already been parsed
+        math_text = []
+        for token in math:
+            if type(token) == str:
+                math_text += self._parse_characters(token) 
+            else:
+                del token['start']
+                del token['end']
+                math_text.append(token)
+
+        # iterate over all the text nodes and split out links from text
+        math_text_links = self._parse_links(math_text)
+
         return {
             'type': 'text',
-            'content': content,
+            # filter out any text nodes that are just empty strings
+            'content': list(filter(lambda token: token['content'] != '', math_text_links))
         }
 
     def _parse_paragraph(self, line, includes_id=False):

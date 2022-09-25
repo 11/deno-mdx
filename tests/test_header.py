@@ -40,7 +40,7 @@ class TestHeader(unittest.TestCase):
         """ test that a # characters inside header text does not produce a header """
 
         test_file = f'{TESTCASE_DIR}/test_header_inside_header.md'
-        expected_html = '<h3 id="Lorem-ipsum-subheader-shouldnt-work">Lorem ipsum #### subheader shouldn\'t work</h3>'
+        expected_html = '<h3 id="lorem-ipsum-subheader-shouldnt-work">Lorem ipsum #### subheader shouldn\'t work</h3>'
         assert html(test_file) == expected_html
 
     def test_header_with_id_markdown(self):

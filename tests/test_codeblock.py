@@ -40,7 +40,6 @@ class TestCodeblock(unittest.TestCase):
             '    console.log(`Hello ${name}`)\n' \
             '}\n' \
             '</pre>'
-
         assert html(test_file) == expected_html
 
     def test_codeblock_with_language_tag_markdown(self):

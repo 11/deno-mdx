@@ -125,6 +125,7 @@ class TestLink(unittest.TestCase):
                             "type": "text",
                         }
                     ],
+                    'id': None,
                     "tag": "p",
                     "type": "paragraph",
                 }
@@ -149,17 +150,16 @@ class TestLink(unittest.TestCase):
                 {
                     "content": {
                         "content": [
-                            {"content": "", "tag": None, "type": None},
                             {
                                 "content": "google",
                                 "href": "https://google.com",
                                 "tag": ["a"],
                                 "type": "link",
-                            },
-                            {"content": "", "tag": None, "type": None},
+                            }
                         ],
                         "type": "text",
                     },
+                    "id": "google",
                     "tag": "h1",
                     "type": "header",
                 },
@@ -177,6 +177,7 @@ class TestLink(unittest.TestCase):
                         ],
                         "type": "text",
                     },
+                    "id": "lorem-ipsum-dolor-sit-amet",
                     "tag": "h3",
                     "type": "header",
                 },
@@ -206,13 +207,13 @@ class TestLink(unittest.TestCase):
                         ],
                         "type": "text",
                     },
+                    "id": "lorem-ipsum-dolor-sit-amet",
                     "tag": "h4",
                     "type": "header",
                 },
             ],
             "filename": "test_link_in_header.md",
         }
-
         assert markdown(test_file) == expected_markdown
 
     def test_link_in_header_html(self):
@@ -220,9 +221,9 @@ class TestLink(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_link_in_header.md')
         expected_html = \
-            '<h1><a href="https://google.com">google</a></h1>\n' \
-            '<h3>Lorem ipsum <a href="https://google.com">dolor</a> sit amet</h3>\n' \
-            '<h4>Lorem <b>ipsum </b><b><a href="https://google.com">dolor</a></b><b> sit</b> amet</h4>'
+            '<h1 id="google"><a href="https://google.com">google</a></h1>\n' \
+            '<h3 id="lorem-ipsum-dolor-sit-amet">Lorem ipsum <a href="https://google.com">dolor</a> sit amet</h3>\n' \
+            '<h4 id="lorem-ipsum-dolor-sit-amet">Lorem <b>ipsum </b><b><a href="https://google.com">dolor</a></b><b> sit</b> amet</h4>'
         assert html(test_file) == expected_html
 
     def test_link_in_ordered_list_markdown(self):
@@ -236,14 +237,12 @@ class TestLink(unittest.TestCase):
                         {
                             "content": {
                                 "content": [
-                                    {"content": "", "tag": None, "type": None},
                                     {
                                         "content": "google",
                                         "href": "https://google.com",
                                         "tag": ["a"],
                                         "type": "link",
                                     },
-                                    {"content": "", "tag": None, "type": None},
                                 ],
                                 "type": "text",
                             },
@@ -303,7 +302,6 @@ class TestLink(unittest.TestCase):
             ],
             "filename": "test_link_in_ordered_list.md",
         }
-
         assert markdown(test_file) == expected_markdown
 
     def test_link_in_ordered_list_html(self):
@@ -329,7 +327,6 @@ class TestLink(unittest.TestCase):
                     "content": [
                         {
                             "content": [
-                                {"content": "", "tag": None, "type": None},
                                 {
                                     "content": "Lorem ipsum dolor sit amet",
                                     "href": "https://google.com",
@@ -363,6 +360,7 @@ class TestLink(unittest.TestCase):
                             "type": "text",
                         }
                     ],
+                    "id": None,
                     "tag": "p",
                     "type": "paragraph",
                 }
@@ -390,14 +388,12 @@ class TestLink(unittest.TestCase):
                         {
                             "content": {
                                 "content": [
-                                    {"content": "", "tag": None, "type": None},
                                     {
                                         "content": "google",
                                         "href": "https://google.com",
                                         "tag": ["a"],
                                         "type": "link",
-                                    },
-                                    {"content": "", "tag": None, "type": None},
+                                    }
                                 ],
                                 "type": "text",
                             },
@@ -457,7 +453,6 @@ class TestLink(unittest.TestCase):
             ],
             "filename": "test_link_in_unordered_list.md",
         }
-
         assert markdown(test_file) == expected_markdown
 
     def test_link_in_unordered_list_html(self):

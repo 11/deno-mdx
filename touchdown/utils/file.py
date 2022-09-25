@@ -1,8 +1,10 @@
+import pdb
 from pathlib import Path
 
 
 def readfile(file: Path, filetype: str=None):
     """ performs error handling on files before creating a file iteartor """
+
     if not file.exists:
         raise FileNotFoundError(f'{filename} does not exist') from None
     elif filetype and file.suffix != filetype:

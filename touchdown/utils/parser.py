@@ -35,7 +35,6 @@ def lookahead(pattern, substr):
 
 def map_decorations_to_tokens(decorations: set):
     """ return correct token and tag values for text blocks wrapped in decorations """
-
     decors_token_map = {
         '*': 'bold',
         '_': 'italic',
@@ -55,6 +54,7 @@ def map_decorations_to_tokens(decorations: set):
     # each time we sort the set of decorations
     decorations = sorted(decorations)
 
+
     return {
         'token': [decors_token_map[decor] for decor in decorations],
         'tag': [decors_tag_map[decor] for decor in decorations],
@@ -70,6 +70,7 @@ def create_html_tag_id(tag_id: str):
         or char.isnumeric() \
         or char in ['_', '-', ' ']
     valid_chars = ''.join(filter(sanitize_valid_chars, tag_id))
+    valid_chars = valid_chars.lower()
 
 
     # strip any extra whitespace between each word
