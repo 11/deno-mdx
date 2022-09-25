@@ -13,6 +13,8 @@ setup(
     author='Doug Rudolph',
     url='https://github.com/11/touchdown',
     packages=['touchdown', 'touchdown.utils'],
+
+    # creates the `touchdown` command on the commandline
     entry_points={
         'console_scripts': [
             'touchdown=touchdown.__main__:touchdown',
