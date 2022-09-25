@@ -13,4 +13,9 @@ setup(
     author='Doug Rudolph',
     url='https://github.com/11/touchdown',
     packages=['touchdown', 'touchdown.utils'],
+    entry_points={
+        'console_scripts': [
+            'touchdown=touchdown.__main__:touchdown',
+        ]
+    },
  )

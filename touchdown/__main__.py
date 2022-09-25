@@ -1,6 +1,4 @@
-import sys
 from json import dumps
-from pprint import pformat
 from pathlib import Path
 from argparse import ArgumentParser
 
@@ -9,7 +7,20 @@ from .markdown import Markdown
 from .errors import MarkdownSyntaxError
 
 
-def run(files=[], output='html', destination=None):
+def parseargs():
+    parser = ArgumentParser(prog='td', description='Parse markdown files')
+
+    # positional args
+    parser.add_argument('files', metavar='Files', type=Path, nargs='+', help='Set of files that will parsed')
+
+    # optional args
+    parser.add_argument('-d', '--destination', type=Path, default=None, help='Output directory')
+    parser.add_argument('-o', '--output', type=str, choices=['json', 'html'], default='html', help='Specify output format (default: HTML)')
+
+    return vars(parser.parse_args())
+
+
+def parse(files=[], output='html', destination=None):
     for file in files:
         try:
             md = Markdown(file).markdown
@@ -31,19 +42,20 @@ def run(files=[], output='html', destination=None):
             print(err)
 
 
-def parseargs():
-    parser = ArgumentParser(prog='td', description='Parse markdown files')
+def touchdown():
+    """ 
+    this function is redundant, but necessary to make the touchdown a 
+    useable from the commandline program 
+    """
 
-    # positional args
-    parser.add_argument('files', metavar='Files', type=Path, nargs='+', help='Set of files that will parsed')
-
-    # optional args
-    parser.add_argument('-d', '--destination', type=Path, default=None, help='Output directory')
-    parser.add_argument('-o', '--output', type=str, choices=['json', 'html'], default='html', help='Specify output format (default: json)')
-
-    return vars(parser.parse_args())
+    kwargs = parseargs()
+    parse(**kwargs)
 
 
 if __name__ == '__main__':
-    kwargs = parseargs()
-    run(**kwargs)
+    """ 
+    this if statement is redundant, but necessary to make it so 
+    you can run touchdown with `python -m touchdown <file>` 
+    """
+
+    touchdown()
