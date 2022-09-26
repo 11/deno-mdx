@@ -67,9 +67,7 @@ class Html:
     def _write_codeblock(self, token):
         tag = token['tag']
         language = token['language']
-        content = '' \
-            .join(token['content']) \
-            .strip()
+        content = token['content']
 
         if language is None:
             return f'<{tag}>\n{content}\n</{tag}>'
@@ -78,10 +76,7 @@ class Html:
 
     def _write_mathblock(self, token):
         tag = token['tag']
-        content = ''.join([
-            f'\n\t{line.strip()}\n'
-            for line in token['content']
-        ])
+        content = token['content']
         return f'<{tag}>{content}</{tag}>'
 
     def _write_list(self, elem):

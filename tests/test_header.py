@@ -26,7 +26,7 @@ class TestHeader(unittest.TestCase):
                         ],
                         "type": "text",
                     },
-                    "id": "Lorem-ipsum-subheader-shouldnt-work",
+                    "id": "lorem-ipsum-subheader-shouldnt-work",
                     "tag": "h3",
                     "type": "header",
                 }

@@ -1,4 +1,5 @@
 import unittest
+from pprint import pprint
 from pathlib import Path
 
 from touchdown import markdown, html
@@ -15,11 +16,9 @@ class TestCodeblock(unittest.TestCase):
         expected_markdown = {
             "content": [
                 {
-                    "content": [
-                        "function greet(name) {\n",
-                        "    console.log(`Hello ${name}`)\n",
-                        "}\n",
-                    ],
+                    "content": "function greet(name) {\n"
+                    "    console.log(`Hello ${name}`)\n"
+                    "}",
                     "language": "javascript",
                     "tag": "pre",
                     "type": "codeblock",
@@ -27,7 +26,6 @@ class TestCodeblock(unittest.TestCase):
             ],
             "filename": "test_codeblock_with_backticks.md",
         }
-
         assert markdown(test_file) == expected_markdown
 
     def test_codeblock_with_backticks_html(self):
@@ -49,13 +47,11 @@ class TestCodeblock(unittest.TestCase):
         expected_markdown = {
             "content": [
                 {
-                    "content": [
-                        "console.log('hello world')\n",
-                        "\n",
-                        "function add(a, b) {\n",
-                        "    return a + b\n",
-                        "}\n",
-                    ],
+                    "content": "console.log('hello world')\n"
+                    "\n"
+                    "function add(a, b) {\n"
+                    "    return a + b\n"
+                    "}",
                     "language": "javascript",
                     "tag": "pre",
                     "type": "codeblock",
@@ -63,7 +59,6 @@ class TestCodeblock(unittest.TestCase):
             ],
             "filename": "test_codeblock_with_language_tag.md",
         }
- 
         assert markdown(test_file) == expected_markdown
 
     def test_codeblock_with_language_tag_html(self):
@@ -78,7 +73,6 @@ class TestCodeblock(unittest.TestCase):
             '    return a + b\n' \
             '}\n' \
             '</pre>'
-
         assert html(test_file) == expected_html
 
     def test_multiple_codeblocks_markdown(self):
@@ -88,23 +82,19 @@ class TestCodeblock(unittest.TestCase):
         expected_markdown = {
             "content": [
                 {
-                    "content": [
-                        "console.log('line 1')\n",
-                        "console.log('line 2')\n",
-                        "console.log('line 3')\n",
-                        "console.log('line 4')\n",
-                    ],
+                    "content": "console.log('line 1')\n"
+                    "console.log('line 2')\n"
+                    "console.log('line 3')\n"
+                    "console.log('line 4')",
                     "language": None,
                     "tag": "pre",
                     "type": "codeblock",
                 },
                 {
-                    "content": [
-                        "console.log('line 5')\n",
-                        "console.log('line 6')\n",
-                        "console.log('line 7')\n",
-                        "console.log('line 8')\n",
-                    ],
+                    "content": "console.log('line 5')\n"
+                    "console.log('line 6')\n"
+                    "console.log('line 7')\n"
+                    "console.log('line 8')",
                     "language": None,
                     "tag": "pre",
                     "type": "codeblock",
@@ -112,7 +102,6 @@ class TestCodeblock(unittest.TestCase):
             ],
             "filename": "test_multiple_codeblocks.md",
         }
-
         assert markdown(test_file) == expected_markdown
 
     def test_multiple_codeblocks_html(self):
@@ -142,7 +131,7 @@ class TestCodeblock(unittest.TestCase):
         expected_markdown = {
             "content": [
                 {
-                    "content": ["console.log('hello world')\n"],
+                    "content": "console.log('hello world')",
                     "language": None,
                     "tag": "pre",
                     "type": "codeblock",
@@ -150,7 +139,6 @@ class TestCodeblock(unittest.TestCase):
             ],
             "filename": "test_single_codeblock.md",
         }
-
         assert markdown(test_file) == expected_markdown
 
     def test_single_codeblock_html(self):
@@ -171,12 +159,10 @@ class TestCodeblock(unittest.TestCase):
         expected_markdown = {
             "content": [
                 {
-                    "content": [
-                        "console.log('line 1')\n",
-                        "console.log('line 2')\n",
-                        "console.log('line 3')\n",
-                        "console.log('line 4')\n",
-                    ],
+                    "content": "console.log('line 1')\n"
+                    "console.log('line 2')\n"
+                    "console.log('line 3')\n"
+                    "console.log('line 4')",
                     "language": None,
                     "tag": "pre",
                     "type": "codeblock",
@@ -184,7 +170,6 @@ class TestCodeblock(unittest.TestCase):
             ],
             "filename": "test_single_codeblock_multiline.md",
         }
-
         assert markdown(test_file) == expected_markdown
 
     def test_single_codeblock_multiline_html(self):

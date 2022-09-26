@@ -13,7 +13,7 @@ class TestMathblock(unittest.TestCase):
         test_file = Path(f'{TESTCASE_DIR}/test_single_mathblock.md')
         expected_markdown = {
             'content': [{
-                'content': ['\\sqrt{3x-1}+(1+x)^2\n'],
+                'content': '$$\\sqrt{3x-1}+(1+x)^2$$',
                 'tag': 'div',
                 'type': 'mathblock'
                 }],
@@ -23,8 +23,5 @@ class TestMathblock(unittest.TestCase):
 
     def test_single_mathblock_html(self):
         test_file = Path(f'{TESTCASE_DIR}/test_single_mathblock.md')
-        expected_html = \
-            '<div>\n' \
-            '\t\\sqrt{3x-1}+(1+x)^2\n' \
-            '</div>'
+        expected_html = '<div>$$\\sqrt{3x-1}+(1+x)^2$$</div>'
         assert html(test_file) == expected_html

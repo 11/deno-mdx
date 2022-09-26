@@ -243,7 +243,8 @@ class TestText(unittest.TestCase):
                             "content": [
                                 {"content": "If ", "tag": None, "type": None},
                                 {
-                                    "content": "\\hat{\\mathcal{E}}_D(x) " "\\leq \\varepsilon",
+                                    "content": "$\\hat{\\mathcal{E}}_D(x) "
+                                    "\\leq \\varepsilon$",
                                     "tag": ["span"],
                                     "type": "math",
                                 },
@@ -252,7 +253,7 @@ class TestText(unittest.TestCase):
                                     "tag": None,
                                     "type": None,
                                 },
-                                {"content": "\\varepsilon", "tag": ["span"], "type": "math"},
+                                {"content": "$\\varepsilon$", "tag": ["span"], "type": "math"},
                                 {"content": "-", "tag": None, "type": None},
                                 {
                                     "content": "confident",
@@ -265,13 +266,13 @@ class TestText(unittest.TestCase):
                                     "tag": None,
                                     "type": None,
                                 },
-                                {"content": "x", "tag": ["span"], "type": "math"},
+                                {"content": "$x$", "tag": ["span"], "type": "math"},
                                 {
                                     "content": "; otherwise, the model is ",
                                     "tag": None,
                                     "type": None,
                                 },
-                                {"content": "\\varepsilon", "tag": ["span"], "type": "math"},
+                                {"content": "$\\varepsilon$", "tag": ["span"], "type": "math"},
                                 {"content": "-", "tag": None, "type": None},
                                 {
                                     "content": "uncertain",
@@ -280,7 +281,7 @@ class TestText(unittest.TestCase):
                                     "type": "text",
                                 },
                                 {"content": ". The ", "tag": None, "type": None},
-                                {"content": "\\varepsilon", "tag": ["span"], "type": "math"},
+                                {"content": "$\\varepsilon$", "tag": ["span"], "type": "math"},
                                 {"content": "-", "tag": None, "type": None},
                                 {
                                     "content": "confidence region",
@@ -296,11 +297,11 @@ class TestText(unittest.TestCase):
                                     "type": None,
                                 },
                                 {
-                                    "content": "\\hat{C}_\\varepsilon = "
+                                    "content": "$\\hat{C}_\\varepsilon = "
                                     "\\{ x \\in X \\mid "
                                     "\\hat{\\mathcal{E}}_D(x) "
                                     "\\leq \\varepsilon \\} "
-                                    "\\subseteq X",
+                                    "\\subseteq X$",
                                     "tag": ["span"],
                                     "type": "math",
                                 },
@@ -322,7 +323,7 @@ class TestText(unittest.TestCase):
         """ test that multiple inline mathblocks parsing takes care of off by 1's and decorative text still works """
 
         test_file = Path(f'{TESTCASE_DIR}/test_multiple_inline_mathblocks.md')
-        expected_html = '<p>If <span>\\hat{\\mathcal{E}}_D(x) \\leq \\varepsilon</span>, we say the model is <span>\\varepsilon</span>-<b>confident</b> in its prediction at <span>x</span>; otherwise, the model is <span>\\varepsilon</span>-<b>uncertain</b>. The <span>\\varepsilon</span>-<b>confidence region</b> is defined as the set of all points where we are confident, denoted <span>\\hat{C}_\\varepsilon = \\{ x \\in X \\mid \\hat{\\mathcal{E}}_D(x) \\leq \\varepsilon \\} \\subseteq X</span>.</p>'
+        expected_html = '<p>If <span>$\\hat{\\mathcal{E}}_D(x) \\leq \\varepsilon$</span>, we say the model is <span>$\\varepsilon$</span>-<b>confident</b> in its prediction at <span>$x$</span>; otherwise, the model is <span>$\\varepsilon$</span>-<b>uncertain</b>. The <span>$\\varepsilon$</span>-<b>confidence region</b> is defined as the set of all points where we are confident, denoted <span>$\\hat{C}_\\varepsilon = \\{ x \\in X \\mid \\hat{\\mathcal{E}}_D(x) \\leq \\varepsilon \\} \\subseteq X$</span>.</p>'
         assert html(test_file) == expected_html
 
 
@@ -338,7 +339,7 @@ class TestText(unittest.TestCase):
                             "content": [
                                 {"content": "this is some math: ", "tag": None, "type": None},
                                 {
-                                    "content": "\\mathcal{E}(y,y') = 0 " "\\iff y = y'",
+                                    "content": "$\\mathcal{E}(y,y') = 0 " "\\iff y = y'$",
                                     "tag": ["span"],
                                     "type": "math",
                                 },
@@ -359,7 +360,7 @@ class TestText(unittest.TestCase):
         """ santiy check that a single inline math block can be parsed """
 
         test_file = Path(f'{TESTCASE_DIR}/test_single_inline_mathblock.md')
-        expected_html = '<p>this is some math: <span>\\mathcal{E}(y,y\') = 0 \\iff y = y\'</span></p>'
+        expected_html = '<p>this is some math: <span>$\\mathcal{E}(y,y\') = 0 \\iff y = y\'$</span></p>'
         assert html(test_file) == expected_html
 
     def test_singleline_text_markdown(self):

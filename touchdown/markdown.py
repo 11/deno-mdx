@@ -127,45 +127,44 @@ class Markdown:
         }
 
     def _parse_mathblock(self, reader):
-        output = {
-            'type': 'mathblock',
-            'tag': 'div',
-            'content': [],
-        }
-
+        content = []
         while (line := next(reader, None)):
             if re.findall(MARKDOWN_REGEXS['mathblock'], line):
                 break
             else:
-                output['content'].append(line)
+                content.append(line)
 
-        return output
-
-    def _parse_codeblock(self, reader):
-        output = {
-            'type': 'codeblock',
-            'tag': 'pre',
-            'language': None,
-            'content': [],
+        mathblock = ''.join(content).strip()
+        return {
+            'type': 'mathblock',
+            'tag': 'div',
+            'content': f'$${mathblock}$$'
         }
 
+    def _parse_codeblock(self, reader):
         reader.backstep()
         codeblock_header = next(reader)
         match = re.findall(MARKDOWN_REGEXS['codeblock_header'], codeblock_header)
         if len(match) != 1:
             raise MarkdownSyntaxError(self._filepath, self._lineno, '')
 
-        _, language = match[0]
-        if language != '':
-            output['language'] = language
+        language = match[0][1] \
+            if match[0][1] != '' \
+            else None
 
+        content = []
         while (line := next(reader, None)):
             if re.findall(MARKDOWN_REGEXS['codeblock_footer'], line):
                 break
             else:
-                output['content'].append(line)
+                content.append(line)
 
-        return output
+        return {
+            'type': 'codeblock',
+            'tag': 'pre',
+            'language': language,
+            'content': ''.join(content).strip()
+        }
 
     def _parse_list(self, reader, list_type, list_tag):
         reader.backstep() # reset the file generator back to the beginning of the ordered list
@@ -239,6 +238,7 @@ class Markdown:
         idx = 0
         while idx < len(maths):
             curr = maths[idx] 
+            curr['content'] = f'${curr["content"]}$'
 
             start = None
             end = None
@@ -252,10 +252,14 @@ class Markdown:
             text = line[start:end]
             content.append(text)
             content.append(curr)
-
             idx += 1
 
-        content.append(line[content[-1]['end']:])
+        # after parsing all the math blocks, we need to append any lingering 
+        # text that might come afterwards
+        last_text = line[content[-1]['end']:]
+        content.append(last_text)
+
+        # filter out any sub-text tokens that are just empty strings
         content = list(filter(lambda string: string != '', content))
 
         return content
@@ -447,6 +451,8 @@ class Markdown:
             if type(token) == str:
                 math_text += self._parse_characters(token) 
             else:
+                # NOTE: we delete these unnecessary `start` and `end nodes
+                # because they were requied through-out all of the `_parse_maths`
                 del token['start']
                 del token['end']
                 math_text.append(token)
