@@ -1,3 +1,6 @@
+import pdb
+
+
 class Html:
     def __init__(self, md_tokens):
         # class variables
@@ -7,15 +10,39 @@ class Html:
         # properties
         self._html = self.run()
 
-    def __iter__(self):
-        self._content = iter(self._md_tokens['content'])
-        return self
+    @property
+    def html(self):
+        return self._html
 
-    def __next__(self):
-        token = next(self._content, None)
-        if not token:
-            raise StopIteration
+    def run(self):
+        head = '\n'.join([f'\t{element}' for element in self._head_itr()])
+        body = '\n'.join([element for element in self._body_itr()])
+        return \
+            '<!DOCTYPE html>\n' \
+            '<html>\n'\
+            f'<head>\n{head}\n</head>\n' \
+            f'<body>{body}</body>\n' \
+            '</html>'
 
+    def _head_itr(self):
+        head = self._md_tokens['head']
+        if head is None:
+            return []
+
+        for token in head:
+            if token is not None:
+                yield self._parse(token)
+
+    def _body_itr(self):
+        body = self._md_tokens['body']
+        if body is None:
+            return []
+
+        for token in body:
+            if token is not None:
+                yield self._parse(token)
+
+    def _parse(self, token):
         if token['type'] == 'header':
             return self._write_header(token)
         elif token['type'] == 'blockquote':
@@ -24,28 +51,22 @@ class Html:
             return self._write_image(token)
         elif token['type'] == 'ordered_list' or token['type'] == 'unordered_list':
             return self._write_list(token)
-        elif token['type'] == 'paragraph':
-            return self._write_paragraph(token)
         elif token['type'] == 'codeblock':
             return self._write_codeblock(token)
         elif token['type'] == 'mathblock':
             return self._write_mathblock(token)
-
-    def run(self):
-        html = '\n'.join([element for element in self])
-        return html
-
-    @property
-    def html(self):
-        return self._html
+        elif token['type'] == 'import' and token['tag'] == 'script':
+            return self._write_script(token)
+        elif token['type'] == 'import' and token['tag'] == 'link':
+            return self._write_link_stylesheet(token)
+        elif token['type'] == 'paragraph':
+            return self._write_paragraph(token)
 
     def _write_header(self, token):
         tag = token['tag']
         content = token['content']
         header_id = token['id']
-
         text = self._write_text(content)
-
         return f'<{tag} id="{header_id}">{text}</{tag}>'
 
     def _write_blockquote(self, token):
@@ -79,14 +100,33 @@ class Html:
         content = token['content']
         return f'<{tag}>{content}</{tag}>'
 
-    def _write_list(self, elem):
-        tag = elem['tag']
+    def _write_list(self, token):
+        tag = token['tag']
         content = elem['content']
         list_items = '\n'.join([
             f'\t<li>{self._write_text(li["content"])}</li>'
             for li in content
         ])
         return f'<{tag}>\n{list_items}\n</{tag}>'
+
+    def _write_script(self, token):
+        is_defer = token['defer']
+        is_async = token['async']
+        src = token['src']
+        tag = token['tag']
+
+        if not is_defer and not is_async:
+            return f'<{tag} src="{src}"></{tag}>'
+        elif is_async:
+            return f'<{tag} src="{src}" async></{tag}>'
+        elif is_defer:
+            return f'<{tag} defer src="{src}"></{tag}>'
+
+    def _write_link_stylesheet(self, token):
+        rel = token['rel']
+        href = token['href']
+        tag = token['tag']
+        return f'<{tag} rel={rel} href="{href}"></{tag}>'
 
     def _write_paragraph(self, token):
         tag = token['tag']

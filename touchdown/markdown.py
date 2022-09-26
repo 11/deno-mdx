@@ -1,4 +1,5 @@
 import re
+import pdb
 from pathlib import Path
 from pprint import pprint
 from io import StringIO as StringBuilder
@@ -62,6 +63,10 @@ class Markdown:
             return self._parse_codeblock(self._reader)
         elif re.match(MARKDOWN_REGEXS['mathblock'], line):
             return self._parse_mathblock(self._reader)
+        elif re.match(MARKDOWN_REGEXS['import'], line):
+            return self._parse_import(line)
+        elif re.match(MARKDOWN_REGEXS['import_from'], line):
+            return self._parse_import_from(line)
         elif re.match(MARKDOWN_REGEXS['paragraph_id'], line):
             return self._parse_paragraph(line, includes_id=True)
         else:
@@ -72,16 +77,23 @@ class Markdown:
         return self._markdown
 
     def run(self):
-        markdown = {
-            'filename': self._filepath.name,
-            'content': [
-                token 
-                for token in self 
-                if token is not None
-            ],
-        }
+        head = []
+        body = []
+        for token in self:
+            if token is None:
+                continue
 
-        return markdown
+            page_tag = token.pop('page_tag', None)
+            if page_tag == 'head':
+                head.append(token)
+            elif page_tag is None or page_tag == 'body':
+                body.append(token)
+
+        return {
+            'filename': self._filepath.name,
+            'head': head if len(head) > 0 else None,
+            'body': body if len(body) > 0 else None,
+        }
 
     def _parse_header(self, line, includes_id=False):
         match = re.findall(MARKDOWN_REGEXS['header_id'], line) \
@@ -108,6 +120,7 @@ class Markdown:
         header_id = create_html_tag_id(header_id_text)
 
         return {
+            'page_tag': 'body',
             'id': header_id,
             'type': 'header',
             'tag': f'h{len(header)}',
@@ -121,6 +134,7 @@ class Markdown:
 
         content = match[0]
         return {
+            'page_tag': 'body',
             'type': 'blockquote',
             'tag': 'blockquote',
             'content': self._parse_text(content),
@@ -136,6 +150,7 @@ class Markdown:
 
         mathblock = ''.join(content).strip()
         return {
+            'page_tag': 'body',
             'type': 'mathblock',
             'tag': 'div',
             'content': f'$${mathblock}$$'
@@ -160,16 +175,85 @@ class Markdown:
                 content.append(line)
 
         return {
+            'page_tag': 'body',
             'type': 'codeblock',
             'tag': 'pre',
             'language': language,
             'content': ''.join(content).strip()
         }
 
+    def _parse_import(self, line):
+        if self._filepath.suffix == '.md':
+            raise MarkdownSyntaxError(
+                self._filepath,
+                self._lineno,
+                f'Trying to use `import` statement inside file with `.md` extension - try changing `{self._filepath}` extension to `.mdx`'
+            )
+
+        match = re.findall(MARKDOWN_REGEXS['import'], line)
+        if len(match) != 1:
+            raise MarkdownSyntaxError(self._filepath, self._lineno, '')
+        elif match[0][0] != '' and match[0][0] != 'async':
+            raise MarkdownSyntaxError(
+                self._filepath,
+                self._lineno,
+                f'Invalid import syntax - do not recognize `{match[0][0]}`'
+            )
+        elif match[0][1] != '' and match[0][1] != 'defer':
+            raise MarkdownSyntaxError(
+                self._filepath,
+                self._lineno,
+                f'Invalid import syntax - do not recognize `{match[0][1]}`'
+            )
+
+        is_async = match[0][0] == 'async'
+        is_defer = match[0][1] == 'defer'
+        uri = match[0][2]
+
+        src_uri = Path(uri)
+        if src_uri.suffix not in set(['.js', '.css']):
+            raise MarkdownSyntaxError(self._filepath, self._lineno, f'Trying to import unrecognized filetype `{src_uri.suffix}`')
+        elif src_uri.suffix == '.css' and is_async:
+            raise MarkdownSyntaxError(self._filepath, self._lineno, f'Cannot import css with `async` - try removing `async`')
+        elif is_async and is_defer:
+            raise MarkdownSyntaxError(
+                self._filepath,
+                self._lineno,
+                f'Invalid import syntax - cannot use both `async` and `defer`'
+            )
+
+        if src_uri.is_dir():
+            return {
+                'page_tag': 'head',
+                'type': 'import',
+                'tag': 'script',
+                'async': is_async,
+                'defer': is_defer,
+                'src': f'{uri}/index.js'
+            }
+        elif src_uri.suffix == '.css' :
+            return {
+                'page_tag': 'head',
+                'type': 'import',
+                'tag': 'link',
+                'href': uri,
+                'rel': 'preload' if is_defer else 'stylesheet',
+            }
+        elif src_uri.suffix == '.js':
+            return {
+                'page_tag': 'head',
+                'type': 'import',
+                'tag': 'script',
+                'async': is_async,
+                'defer': is_defer,
+                'src': uri,
+            }
+
     def _parse_list(self, reader, list_type, list_tag):
         reader.backstep() # reset the file generator back to the beginning of the ordered list
 
         output = {
+            'page_tag': 'body',
             'type': list_type,
             'tag': list_tag,
             'content': [],
@@ -210,6 +294,7 @@ class Markdown:
 
         alt_text, uri = match[0]
         return {
+            'page_tag': 'body',
             'type': 'image',
             'tag': 'img',
             'uri': uri,
@@ -487,6 +572,7 @@ class Markdown:
             line = line[seek:].lstrip()
 
         return {
+            'page_tag': 'body',
             'id': paragraph_id,
             'type': 'paragraph',
             'tag': 'p',

@@ -35,6 +35,14 @@ MARKDOWN_REGEXS = {
 
     # https://www.debuggex.com/r/v_AE_qRrG_tOMTNc
     'paragraph_id': r'^{([a-zA-Z0-9_\-]*)}',
+
+    # https://www.debuggex.com/r/p2CN4H5EZaHe8Fz7
+    # this allows for the following types of import statements:
+    # 1. import '<FILE>'             can be used for JS and CSS
+    # 2. defer import '<FILE>'       can be used for JS and CSS
+    # 3. async import '<FILE>'       can be used for JS
+    # 4. async defer import '<FILE>' can be used for JS
+    'import': r"(?:(async)?[^\S\r\n]+)?(?:(defer)?[^\S\r\n]+)?import '([a-zA-Z0-9/\.]+)'[\n\r]*?",
 }
 
 
