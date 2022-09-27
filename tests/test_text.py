@@ -14,7 +14,8 @@ class TestText(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_formatted_text_nonoverlap.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -74,7 +75,8 @@ class TestText(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_formatted_text_overlap.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -149,7 +151,8 @@ class TestText(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_multiline_text.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -236,7 +239,8 @@ class TestText(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_multiple_inline_mathblocks.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -332,7 +336,8 @@ class TestText(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_single_inline_mathblock.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -368,7 +373,8 @@ class TestText(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_singleline_text.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {

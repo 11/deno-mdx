@@ -14,7 +14,8 @@ class TestParagraph(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_paragraph_with_id.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -54,7 +55,8 @@ class TestParagraph(unittest.TestCase):
     def test_id_paragraph_with_invalid_characters_in_id_markdown(self):
         test_file = Path(f'{TESTCASE_DIR}/test_id_paragraph_with_invalid_characters_in_id.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {

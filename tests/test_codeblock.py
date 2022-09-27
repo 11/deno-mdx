@@ -14,7 +14,8 @@ class TestCodeblock(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_codeblock_with_backticks.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": "function greet(name) {\n"
                     "    console.log(`Hello ${name}`)\n"
@@ -45,7 +46,8 @@ class TestCodeblock(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_codeblock_with_language_tag.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": "console.log('hello world')\n"
                     "\n"
@@ -80,7 +82,8 @@ class TestCodeblock(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_multiple_codeblocks.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": "console.log('line 1')\n"
                     "console.log('line 2')\n"
@@ -129,7 +132,8 @@ class TestCodeblock(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_single_codeblock.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": "console.log('hello world')",
                     "language": None,
@@ -157,7 +161,8 @@ class TestCodeblock(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_single_codeblock_multiline.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": "console.log('line 1')\n"
                     "console.log('line 2')\n"
@@ -185,4 +190,3 @@ class TestCodeblock(unittest.TestCase):
             '</pre>'
 
         assert html(test_file) == expected_html
-

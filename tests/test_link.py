@@ -22,7 +22,8 @@ class TestLink(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_link_in_blockquote.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": {
                         "content": [
@@ -73,7 +74,8 @@ class TestLink(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_link_in_decorated_text.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -146,7 +148,8 @@ class TestLink(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_link_in_header.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": {
                         "content": [
@@ -231,7 +234,8 @@ class TestLink(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_link_in_ordered_list.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -322,7 +326,8 @@ class TestLink(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_link_in_plain_text.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -382,7 +387,8 @@ class TestLink(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_link_in_unordered_list.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {

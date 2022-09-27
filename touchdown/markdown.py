@@ -65,8 +65,6 @@ class Markdown:
             return self._parse_mathblock(self._reader)
         elif re.match(MARKDOWN_REGEXS['import'], line):
             return self._parse_import(line)
-        elif re.match(MARKDOWN_REGEXS['import_from'], line):
-            return self._parse_import_from(line)
         elif re.match(MARKDOWN_REGEXS['paragraph_id'], line):
             return self._parse_paragraph(line, includes_id=True)
         else:

@@ -12,7 +12,8 @@ class TestBlockquote(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_multiple_blockquotes.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": {
                         "content": [
@@ -87,7 +88,8 @@ class TestBlockquote(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_single_blockquote.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": {
                         "content": [

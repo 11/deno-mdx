@@ -14,7 +14,8 @@ class TestImage(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_image_with_default_uri.md')
         expected_markdown = {
-            "content": [{"alt": "alt text", "tag": "img", "type": "image", "uri": "#"}],
+            "head": None,
+            "body": [{"alt": "alt text", "tag": "img", "type": "image", "uri": "#"}],
             "filename": "test_image_with_default_uri.md",
         }
 
@@ -32,7 +33,8 @@ class TestImage(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_image_with_link_in_uri.md')
         expected_markdown = {
-            'content': [{
+            'head': None,
+            'body': [{
                 'alt': 'alt text',
                 'tag': 'img',
                 'type': 'image',
@@ -54,7 +56,8 @@ class TestImage(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_image_with_local_file_uri.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "alt": "eagle",
                     "tag": "img",
@@ -78,7 +81,8 @@ class TestImage(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_image_with_no_uri.md')
         expected_markdown = {
-            "content": [{"alt": "alt text", "tag": "img", "type": "image", "uri": ""}],
+            "head": None,
+            "body": [{"alt": "alt text", "tag": "img", "type": "image", "uri": ""}],
             "filename": "test_image_with_no_uri.md",
         }
         assert markdown(test_file) == expected_markdown

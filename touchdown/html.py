@@ -102,7 +102,7 @@ class Html:
 
     def _write_list(self, token):
         tag = token['tag']
-        content = elem['content']
+        content = token['content']
         list_items = '\n'.join([
             f'\t<li>{self._write_text(li["content"])}</li>'
             for li in content

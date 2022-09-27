@@ -1,4 +1,5 @@
 import unittest
+from pprint import pprint
 from pathlib import Path
 
 from touchdown import markdown, html
@@ -13,7 +14,8 @@ class TestUnorderedList(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_several_list_elements.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -101,7 +103,8 @@ class TestUnorderedList(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_several_lists.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -238,7 +241,8 @@ class TestUnorderedList(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_single_list_element.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -258,7 +262,6 @@ class TestUnorderedList(unittest.TestCase):
             ],
             "filename": "test_single_list_element.md",
         }
- 
         assert markdown(test_file) == expected_markdown
 
     def test_single_list_element_html(self):

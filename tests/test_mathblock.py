@@ -12,7 +12,8 @@ class TestMathblock(unittest.TestCase):
     def test_single_mathblock_markdown(self):
         test_file = Path(f'{TESTCASE_DIR}/test_single_mathblock.md')
         expected_markdown = {
-            'content': [{
+            'head': None,
+            'body': [{
                 'content': '$$\\sqrt{3x-1}+(1+x)^2$$',
                 'tag': 'div',
                 'type': 'mathblock'

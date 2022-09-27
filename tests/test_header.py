@@ -14,7 +14,8 @@ class TestHeader(unittest.TestCase):
 
         test_file = f'{TESTCASE_DIR}/test_header_inside_header.md'
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": {
                         "content": [
@@ -48,7 +49,8 @@ class TestHeader(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_header_with_id.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": {
                         "content": [
@@ -77,7 +79,8 @@ class TestHeader(unittest.TestCase):
 
         test_file = f'{TESTCASE_DIR}/test_invalid_headers.md'
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -133,7 +136,8 @@ class TestHeader(unittest.TestCase):
 
         test_file = f'{TESTCASE_DIR}/test_valid_headers.md'
         expected_markdown ={
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": {
                         "content": [{"content": "header 1", "tag": None, "type": None}],

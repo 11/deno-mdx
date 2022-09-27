@@ -13,7 +13,8 @@ class TestOrderedList(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_list_element_numbers_are_corrected.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -120,7 +121,8 @@ class TestOrderedList(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_several_list_elements.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -208,7 +210,8 @@ class TestOrderedList(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_several_lists.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
@@ -345,7 +348,8 @@ class TestOrderedList(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_single_list_element.md')
         expected_markdown = {
-            "content": [
+            "head": None,
+            "body": [
                 {
                     "content": [
                         {
