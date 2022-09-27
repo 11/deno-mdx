@@ -27,7 +27,7 @@ class Html:
             return \
                 '<!DOCTYPE html>\n' \
                 '<html>\n'\
-                f'<body\n{body}\n</body>\n' \
+                f'<body>\n{body}\n</body>\n' \
                 '</html>'
         elif body == '':
             return \
