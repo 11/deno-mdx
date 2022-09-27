@@ -24,5 +24,11 @@ class TestMathblock(unittest.TestCase):
 
     def test_single_mathblock_html(self):
         test_file = Path(f'{TESTCASE_DIR}/test_single_mathblock.md')
-        expected_html = '<div>$$\\sqrt{3x-1}+(1+x)^2$$</div>'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<div>$$\\sqrt{3x-1}+(1+x)^2$$</div>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html

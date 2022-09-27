@@ -25,7 +25,13 @@ class TestImage(unittest.TestCase):
         """ test user can manually palce `#` sign in URI """
 
         test_file = Path(f'{TESTCASE_DIR}/test_image_with_default_uri.md')
-        expected_html = '<img alt="alt text" src="#" />'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<img alt="alt text" src="#" />\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_image_with_link_in_uri_markdown(self):
@@ -48,7 +54,13 @@ class TestImage(unittest.TestCase):
         """ test images can include link in URI """
 
         test_file = Path(f'{TESTCASE_DIR}/test_image_with_link_in_uri.md')
-        expected_html = '<img alt="alt text" src="https://media.newyorker.com/photos/5a95a5b13d9089123c9fdb7e/1:1/w_3289,h_3289,c_limit/Petrusich-Dont-Mess-with-the-Birds.jpg" />'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<img alt="alt text" src="https://media.newyorker.com/photos/5a95a5b13d9089123c9fdb7e/1:1/w_3289,h_3289,c_limit/Petrusich-Dont-Mess-with-the-Birds.jpg" />\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_image_with_local_file_uri_markdown(self):
@@ -73,7 +85,13 @@ class TestImage(unittest.TestCase):
         """ sanity check that markdown will find local images """
 
         test_file = Path(f'{TESTCASE_DIR}/test_image_with_local_file_uri.md')
-        expected_html = '<img alt="eagle" src="/testcases/image/eagle.png" />'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<img alt="eagle" src="/testcases/image/eagle.png" />\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_image_with_local_no_uri_markdown(self):
@@ -91,5 +109,11 @@ class TestImage(unittest.TestCase):
         """ test that defulat URI is `#` """
 
         test_file = Path(f'{TESTCASE_DIR}/test_image_with_no_uri.md')
-        expected_html = '<img alt="alt text" src="#" />'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<img alt="alt text" src="#" />\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html

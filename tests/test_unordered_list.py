@@ -89,12 +89,17 @@ class TestUnorderedList(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_several_list_elements.md')
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<ul>\n' \
             '\t<li>Lorem ipsum dolor sit amet</li>\n' \
             '\t<li>consectetur adipiscing elit</li>\n' \
             '\t<li>sed do eiusmod tempor incididunt </li>\n' \
             '\t<li>ut labore et dolore magna aliqua.</li>\n' \
-            '</ul>'
+            '</ul>\n' \
+            '</body>\n' \
+            '</html>'
 
         assert html(test_file) == expected_html
 
@@ -221,6 +226,9 @@ class TestUnorderedList(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_several_lists.md')
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<ul>\n' \
             '\t<li>Lorem ipsum dolor sit amet</li>\n' \
             '\t<li>consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</li>\n' \
@@ -232,8 +240,9 @@ class TestUnorderedList(unittest.TestCase):
             '</ul>\n' \
             '<ul>\n' \
             '\t<li>ullamco laboris nisi ut aliquip ex ea commodo consequat</li>\n' \
-            '</ul>' 
-
+            '</ul>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_single_list_element_markdown(self):
@@ -269,8 +278,12 @@ class TestUnorderedList(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_single_list_element.md')
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<ul>\n' \
             '\t<li>this is a test</li>\n' \
-            '</ul>'
-
+            '</ul>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html

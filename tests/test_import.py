@@ -54,7 +54,6 @@ class TestImport(unittest.TestCase):
             '<head>\n' \
             '\t<script src="test.js" async></script>\n' \
             '</head>\n' \
-            '<body></body>\n' \
             '</html>'
         assert html(test_file) == expected_html
 
@@ -141,7 +140,6 @@ class TestImport(unittest.TestCase):
             '\t<script src="test.js"></script>\n' \
             '\t<link rel=stylesheet href="styles/index.css"></link>\n' \
             '</head>\n'\
-            '<body></body>\n'\
             '</html>'
         assert html(test_file) == expected_html
 

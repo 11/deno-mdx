@@ -67,7 +67,13 @@ class TestText(unittest.TestCase):
         """ testing text with non-overlapping tags """
 
         test_file = Path(f'{TESTCASE_DIR}/test_formatted_text_nonoverlap.md')
-        expected_html = '<p><s>Lorem ipsum</s> do <code>lor</code> sit <b>amet, consectetur adipiscing elit,</b> sed <i>do eiusmod tempor incididunt ut labore et dolore magna</i> aliqua.</p>'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<p><s>Lorem ipsum</s> do <code>lor</code> sit <b>amet, consectetur adipiscing elit,</b> sed <i>do eiusmod tempor incididunt ut labore et dolore magna</i> aliqua.</p>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_formatted_text_overlap_markdown(self):
@@ -142,8 +148,14 @@ class TestText(unittest.TestCase):
     def test_formatted_text_overlap_html(self):
         """ testing formatted text with overlaping tags"""
 
-        expected_html = '<p><i><s>Lorem </s></i><b><i><s>ips</s></i></b><b><code><i><s>um</s></i></code></b><b><code><s> do lor</s></code></b><code><s> sit</s></code><s> amet</s>, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>'
         test_file = Path(f'{TESTCASE_DIR}/test_formatted_text_overlap.md')
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<p><i><s>Lorem </s></i><b><i><s>ips</s></i></b><b><code><i><s>um</s></i></code></b><b><code><s> do lor</s></code></b><code><s> sit</s></code><s> amet</s>, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_multiline_text_markdown(self):
@@ -231,7 +243,13 @@ class TestText(unittest.TestCase):
         """ tests that multiple lines of plane text are converted to several paragraph tags """
 
         test_file = Path(f'{TESTCASE_DIR}/test_multiline_text.md')
-        expected_html = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>\n<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>\n<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_mutliple_inline_mathblocks_markdown(self):
@@ -327,9 +345,14 @@ class TestText(unittest.TestCase):
         """ test that multiple inline mathblocks parsing takes care of off by 1's and decorative text still works """
 
         test_file = Path(f'{TESTCASE_DIR}/test_multiple_inline_mathblocks.md')
-        expected_html = '<p>If <span>$\\hat{\\mathcal{E}}_D(x) \\leq \\varepsilon$</span>, we say the model is <span>$\\varepsilon$</span>-<b>confident</b> in its prediction at <span>$x$</span>; otherwise, the model is <span>$\\varepsilon$</span>-<b>uncertain</b>. The <span>$\\varepsilon$</span>-<b>confidence region</b> is defined as the set of all points where we are confident, denoted <span>$\\hat{C}_\\varepsilon = \\{ x \\in X \\mid \\hat{\\mathcal{E}}_D(x) \\leq \\varepsilon \\} \\subseteq X$</span>.</p>'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<p>If <span>$\\hat{\\mathcal{E}}_D(x) \\leq \\varepsilon$</span>, we say the model is <span>$\\varepsilon$</span>-<b>confident</b> in its prediction at <span>$x$</span>; otherwise, the model is <span>$\\varepsilon$</span>-<b>uncertain</b>. The <span>$\\varepsilon$</span>-<b>confidence region</b> is defined as the set of all points where we are confident, denoted <span>$\\hat{C}_\\varepsilon = \\{ x \\in X \\mid \\hat{\\mathcal{E}}_D(x) \\leq \\varepsilon \\} \\subseteq X$</span>.</p>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
-
 
     def test_single_inline_mathblock_markdown(self):
         """ santiy check that a single inline mathblock can be parsed """
@@ -365,7 +388,13 @@ class TestText(unittest.TestCase):
         """ santiy check that a single inline math block can be parsed """
 
         test_file = Path(f'{TESTCASE_DIR}/test_single_inline_mathblock.md')
-        expected_html = '<p>this is some math: <span>$\\mathcal{E}(y,y\') = 0 \\iff y = y\'$</span></p>'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<p>this is some math: <span>$\\mathcal{E}(y,y\') = 0 \\iff y = y\'$</span></p>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_singleline_text_markdown(self):
@@ -405,5 +434,11 @@ class TestText(unittest.TestCase):
         """ sanity check that single of text is interpreted as a paragraph tag """
 
         test_file = Path(f'{TESTCASE_DIR}/test_singleline_text.md')
-        expected_html = '<p>Hello world. This should only result in one paragraph tag and one text token</p>'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<p>Hello world. This should only result in one paragraph tag and one text token</p>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html

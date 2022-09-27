@@ -66,7 +66,13 @@ class TestLink(unittest.TestCase):
         """ testing links are parsed out correctly inside blockquote """
 
         test_file = Path(f'{TESTCASE_DIR}/test_link_in_blockquote.md')
-        expected_html = '<blockquote>Lorem ipsum dolor sit amet, consectetur <a href="https://google.com">adipiscing elit</a>, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</blockquote>'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<blockquote>Lorem ipsum dolor sit amet, consectetur <a href="https://google.com">adipiscing elit</a>, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</blockquote>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_link_in_decorated_text_markdown(self):
@@ -140,7 +146,13 @@ class TestLink(unittest.TestCase):
         """ test that styling is still correctly applied to links after parsing text decoration """
 
         test_file = Path(f'{TESTCASE_DIR}/test_link_in_decorated_text.md')
-        expected_html = '<p>Lorem ipsum <b>dolor sit </b><b><s>amet, </s></b><b><s><a href="https://google.com">consectetur</a></s></b><b><s> adipiscing</s></b><b>elit</b>, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<p>Lorem ipsum <b>dolor sit </b><b><s>amet, </s></b><b><s><a href="https://google.com">consectetur</a></s></b><b><s> adipiscing</s></b><b>elit</b>, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_link_in_header_markdown(self):
@@ -224,9 +236,14 @@ class TestLink(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_link_in_header.md')
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<h1 id="google"><a href="https://google.com">google</a></h1>\n' \
             '<h3 id="lorem-ipsum-dolor-sit-amet">Lorem ipsum <a href="https://google.com">dolor</a> sit amet</h3>\n' \
-            '<h4 id="lorem-ipsum-dolor-sit-amet">Lorem <b>ipsum </b><b><a href="https://google.com">dolor</a></b><b> sit</b> amet</h4>'
+            '<h4 id="lorem-ipsum-dolor-sit-amet">Lorem <b>ipsum </b><b><a href="https://google.com">dolor</a></b><b> sit</b> amet</h4>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_link_in_ordered_list_markdown(self):
@@ -313,11 +330,16 @@ class TestLink(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_link_in_ordered_list.md')
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<ol>\n' \
             '\t<li><a href="https://google.com">google</a></li>\n' \
             '\t<li>Lorem ipsum <a href="https://google.com">dolor</a> sit amet</li>\n' \
             '\t<li>Lorem <b>ipsum </b><b><a href="https://google.com">dolor</a></b><b> sit</b> amet</li>\n' \
-            '</ol>'
+            '</ol>\n' \
+            '</body>\n' \
+            '</html>'
 
         assert html(test_file) == expected_html
 
@@ -379,7 +401,13 @@ class TestLink(unittest.TestCase):
         """ sanity check that tests in plain text work """
 
         test_file = Path(f'{TESTCASE_DIR}/test_link_in_plain_text.md')
-        expected_html = '<p><a href="https://google.com">Lorem ipsum dolor sit amet</a>, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <a href="https://google.com">Ut enim ad minim veniam</a>, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<p><a href="https://google.com">Lorem ipsum dolor sit amet</a>, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <a href="https://google.com">Ut enim ad minim veniam</a>, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_link_in_unordered_list_markdown(self):
@@ -466,10 +494,14 @@ class TestLink(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_link_in_unordered_list.md')
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<ul>\n' \
             '\t<li><a href="https://google.com">google</a></li>\n' \
             '\t<li>Lorem ipsum <a href="https://google.com">dolor</a> sit amet</li>\n' \
             '\t<li>Lorem <b>ipsum </b><b><a href="https://google.com">dolor</a></b><b> sit</b> amet</li>\n' \
-            '</ul>'
-
+            '</ul>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html

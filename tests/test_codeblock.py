@@ -34,11 +34,16 @@ class TestCodeblock(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_codeblock_with_backticks.md')
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<pre data-language="javascript">\n' \
             'function greet(name) {\n' \
             '    console.log(`Hello ${name}`)\n' \
             '}\n' \
-            '</pre>'
+            '</pre>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_codeblock_with_language_tag_markdown(self):
@@ -68,13 +73,18 @@ class TestCodeblock(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_codeblock_with_language_tag.md')
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<pre data-language="javascript">\n' \
             'console.log(\'hello world\')\n' \
             '\n' \
             'function add(a, b) {\n' \
             '    return a + b\n' \
             '}\n' \
-            '</pre>'
+            '</pre>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_multiple_codeblocks_markdown(self):
@@ -112,6 +122,9 @@ class TestCodeblock(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_multiple_codeblocks.md')
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<pre>\n' \
             'console.log(\'line 1\')\n' \
             'console.log(\'line 2\')\n' \
@@ -123,7 +136,9 @@ class TestCodeblock(unittest.TestCase):
             'console.log(\'line 6\')\n' \
             'console.log(\'line 7\')\n' \
             'console.log(\'line 8\')\n' \
-            '</pre>' 
+            '</pre>\n' \
+            '</body>\n' \
+            '</html>'
 
         assert html(test_file) == expected_html
 
@@ -150,9 +165,14 @@ class TestCodeblock(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_single_codeblock.md')
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<pre>\n' \
             'console.log(\'hello world\')\n' \
-            '</pre>'
+            '</pre>\n' \
+            '</body>\n' \
+            '</html>'
 
         assert html(test_file) == expected_html
 
@@ -182,11 +202,16 @@ class TestCodeblock(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_single_codeblock_multiline.md')
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<pre>\n' \
             'console.log(\'line 1\')\n' \
             'console.log(\'line 2\')\n' \
             'console.log(\'line 3\')\n' \
             'console.log(\'line 4\')\n' \
-            '</pre>'
+            '</pre>\n' \
+            '</body>\n' \
+            '</html>'
 
         assert html(test_file) == expected_html

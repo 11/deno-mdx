@@ -41,7 +41,13 @@ class TestHeader(unittest.TestCase):
         """ test that a # characters inside header text does not produce a header """
 
         test_file = f'{TESTCASE_DIR}/test_header_inside_header.md'
-        expected_html = '<h3 id="lorem-ipsum-subheader-shouldnt-work">Lorem ipsum #### subheader shouldn\'t work</h3>'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<h3 id="lorem-ipsum-subheader-shouldnt-work">Lorem ipsum #### subheader shouldn\'t work</h3>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_header_with_id_markdown(self):
@@ -71,7 +77,13 @@ class TestHeader(unittest.TestCase):
         """ test that a custom ID can be added to a header """
 
         test_file = Path(f'{TESTCASE_DIR}/test_header_with_id.md')
-        expected_html = '<h1 id="lorem-ipsum-dolor">Lorem ipsum dolor</h1>'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
+            '<h1 id="lorem-ipsum-dolor">Lorem ipsum dolor</h1>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_invalid_headers_markdown(self):
@@ -126,8 +138,13 @@ class TestHeader(unittest.TestCase):
 
         test_file = f'{TESTCASE_DIR}/test_invalid_headers.md'
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<p>####### This shouldn\'t be a header</p>\n' \
-            '<p>########### this doesn\'t make any sense</p>'
+            '<p>########### this doesn\'t make any sense</p>\n' \
+            '</body>\n' \
+            '</html>'
 
         assert html(test_file) == expected_html
 
@@ -204,11 +221,16 @@ class TestHeader(unittest.TestCase):
 
         test_file = f'{TESTCASE_DIR}/test_valid_headers.md'
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<h1 id="header-1">header 1</h1>\n' \
             '<h2 id="header-2">header 2</h2>\n' \
             '<h3 id="header-3">header 3</h3>\n' \
             '<h4 id="header-4">header 4</h4>\n' \
             '<h5 id="header-5">header 5</h5>\n' \
-            '<h6 id="header-6">header 6</h6>'
+            '<h6 id="header-6">header 6</h6>\n' \
+            '</body>\n' \
+            '</html>'
 
         assert html(test_file) == expected_html

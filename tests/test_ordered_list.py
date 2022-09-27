@@ -106,13 +106,18 @@ class TestOrderedList(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_list_element_numbers_are_corrected.md')
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<ol>\n' \
             '\t<li>Lorem ipsum dolor sit amet</li>\n' \
             '\t<li>consectetur adipiscing elit</li>\n' \
             '\t<li>sed do eiusmod tempor incididunt </li>\n' \
             '\t<li>ut labore et dolore magna aliqua.</li>\n' \
             '\t<li>the list elmeents should be corrected to be 1,2,3,4,5</li>\n' \
-            '</ol>'
+            '</ol>\n' \
+            '</body>\n' \
+            '</html>'
  
         assert html(test_file) == expected_html
 
@@ -196,12 +201,17 @@ class TestOrderedList(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_several_list_elements.md')
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<ol>\n' \
             '\t<li>Lorem ipsum dolor sit amet</li>\n' \
             '\t<li>consectetur adipiscing elit</li>\n' \
             '\t<li>sed do eiusmod tempor incididunt </li>\n' \
             '\t<li>ut labore et dolore magna aliqua.</li>\n' \
-            '</ol>'
+            '</ol>\n' \
+            '</body>\n' \
+            '</html>'
  
         assert html(test_file) == expected_html
 
@@ -328,6 +338,9 @@ class TestOrderedList(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_several_lists.md')
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<ol>\n' \
             '\t<li>Lorem ipsum dolor sit amet</li>\n' \
             '\t<li>consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</li>\n' \
@@ -339,8 +352,9 @@ class TestOrderedList(unittest.TestCase):
             '</ol>\n' \
             '<ol>\n' \
             '\t<li>ullamco laboris nisi ut aliquip ex ea commodo consequat</li>\n' \
-            '</ol>'
-
+            '</ol>\n' \
+            '</body>\n' \
+            '</html>'
         assert html(test_file) == expected_html
 
     def test_single_list_element_markdown(self):
@@ -377,8 +391,13 @@ class TestOrderedList(unittest.TestCase):
 
         test_file = Path(f'{TESTCASE_DIR}/test_single_list_element.md')
         expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body\n' \
             '<ol>\n' \
             '\t<li>this is a test</li>\n' \
-            '</ol>'
+            '</ol>\n' \
+            '</body>\n' \
+            '</html>'
 
         assert html(test_file) == expected_html

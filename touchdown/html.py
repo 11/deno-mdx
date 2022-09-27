@@ -17,11 +17,30 @@ class Html:
     def run(self):
         head = '\n'.join([f'\t{element}' for element in self._head_itr()])
         body = '\n'.join([element for element in self._body_itr()])
+
+        if head == '' and body == '':
+            return \
+                '<!DOCTYPE html>\n' \
+                '<html>\n'\
+                '</html>'
+        if head == '':
+            return \
+                '<!DOCTYPE html>\n' \
+                '<html>\n'\
+                f'<body\n{body}\n</body>\n' \
+                '</html>'
+        elif body == '':
+            return \
+                '<!DOCTYPE html>\n' \
+                '<html>\n'\
+                f'<head>\n{head}\n</head>\n' \
+                '</html>'
+
         return \
             '<!DOCTYPE html>\n' \
             '<html>\n'\
             f'<head>\n{head}\n</head>\n' \
-            f'<body>{body}</body>\n' \
+            f'<body\n{body}\n</body>\n' \
             '</html>'
 
     def _head_itr(self):
