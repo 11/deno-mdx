@@ -1,6 +1,3 @@
-import pdb
-
-
 class Html:
     def __init__(self, md_tokens):
         # class variables
@@ -40,7 +37,7 @@ class Html:
             '<!DOCTYPE html>\n' \
             '<html>\n'\
             f'<head>\n{head}\n</head>\n' \
-            f'<body\n{body}\n</body>\n' \
+            f'<body>\n{body}\n</body>\n' \
             '</html>'
 
     def _head_itr(self):
