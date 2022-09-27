@@ -1,3 +1,4 @@
+import pdb
 class Html:
     def __init__(self, md_tokens):
         # class variables
@@ -12,15 +13,15 @@ class Html:
         return self._html
 
     def run(self):
-        head = '\n'.join([f'\t{element}' for element in self._head_itr()])
-        body = '\n'.join([element for element in self._body_itr()])
+        head = '\n'.join([f'\t{element}' for element in self._head_iter()])
+        body = '\n'.join([element for element in self._body_iter()])
 
         if head == '' and body == '':
             return \
                 '<!DOCTYPE html>\n' \
                 '<html>\n'\
                 '</html>'
-        if head == '':
+        elif head == '' and body != '':
             return \
                 '<!DOCTYPE html>\n' \
                 '<html>\n'\
@@ -40,7 +41,7 @@ class Html:
             f'<body>\n{body}\n</body>\n' \
             '</html>'
 
-    def _head_itr(self):
+    def _head_iter(self):
         head = self._md_tokens['head']
         if head is None:
             return []
@@ -49,7 +50,7 @@ class Html:
             if token is not None:
                 yield self._parse(token)
 
-    def _body_itr(self):
+    def _body_iter(self):
         body = self._md_tokens['body']
         if body is None:
             return []
@@ -95,7 +96,6 @@ class Html:
         tag = token['tag']
         alt_text = token['alt']
         uri = token['uri']
-
         if uri is None or uri == '':
             return f'<{tag} alt="{alt_text}" src="#" />'
 

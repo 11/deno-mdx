@@ -108,7 +108,7 @@ class TestOrderedList(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<ol>\n' \
             '\t<li>Lorem ipsum dolor sit amet</li>\n' \
             '\t<li>consectetur adipiscing elit</li>\n' \
@@ -203,7 +203,7 @@ class TestOrderedList(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<ol>\n' \
             '\t<li>Lorem ipsum dolor sit amet</li>\n' \
             '\t<li>consectetur adipiscing elit</li>\n' \
@@ -340,7 +340,7 @@ class TestOrderedList(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<ol>\n' \
             '\t<li>Lorem ipsum dolor sit amet</li>\n' \
             '\t<li>consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</li>\n' \
@@ -393,7 +393,7 @@ class TestOrderedList(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<ol>\n' \
             '\t<li>this is a test</li>\n' \
             '</ol>\n' \

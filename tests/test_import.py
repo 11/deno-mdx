@@ -100,7 +100,6 @@ class TestImport(unittest.TestCase):
             '\t<script defer src="test.js"></script>\n' \
             '\t<link rel=preload href="test.css"></link>\n' \
             '</head>\n' \
-            '<body></body>\n' \
             '</html>'
         assert html(test_file) == expected_html
 

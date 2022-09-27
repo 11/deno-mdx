@@ -36,7 +36,7 @@ class TestCodeblock(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<pre data-language="javascript">\n' \
             'function greet(name) {\n' \
             '    console.log(`Hello ${name}`)\n' \
@@ -75,7 +75,7 @@ class TestCodeblock(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<pre data-language="javascript">\n' \
             'console.log(\'hello world\')\n' \
             '\n' \
@@ -124,7 +124,7 @@ class TestCodeblock(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<pre>\n' \
             'console.log(\'line 1\')\n' \
             'console.log(\'line 2\')\n' \
@@ -167,7 +167,7 @@ class TestCodeblock(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<pre>\n' \
             'console.log(\'hello world\')\n' \
             '</pre>\n' \
@@ -204,7 +204,7 @@ class TestCodeblock(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<pre>\n' \
             'console.log(\'line 1\')\n' \
             'console.log(\'line 2\')\n' \

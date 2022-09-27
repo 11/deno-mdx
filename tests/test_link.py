@@ -69,7 +69,7 @@ class TestLink(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<blockquote>Lorem ipsum dolor sit amet, consectetur <a href="https://google.com">adipiscing elit</a>, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</blockquote>\n' \
             '</body>\n' \
             '</html>'
@@ -149,7 +149,7 @@ class TestLink(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<p>Lorem ipsum <b>dolor sit </b><b><s>amet, </s></b><b><s><a href="https://google.com">consectetur</a></s></b><b><s> adipiscing</s></b><b>elit</b>, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>\n' \
             '</body>\n' \
             '</html>'
@@ -238,7 +238,7 @@ class TestLink(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<h1 id="google"><a href="https://google.com">google</a></h1>\n' \
             '<h3 id="lorem-ipsum-dolor-sit-amet">Lorem ipsum <a href="https://google.com">dolor</a> sit amet</h3>\n' \
             '<h4 id="lorem-ipsum-dolor-sit-amet">Lorem <b>ipsum </b><b><a href="https://google.com">dolor</a></b><b> sit</b> amet</h4>\n' \
@@ -332,7 +332,7 @@ class TestLink(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<ol>\n' \
             '\t<li><a href="https://google.com">google</a></li>\n' \
             '\t<li>Lorem ipsum <a href="https://google.com">dolor</a> sit amet</li>\n' \
@@ -404,7 +404,7 @@ class TestLink(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<p><a href="https://google.com">Lorem ipsum dolor sit amet</a>, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <a href="https://google.com">Ut enim ad minim veniam</a>, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>\n' \
             '</body>\n' \
             '</html>'
@@ -496,7 +496,7 @@ class TestLink(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<ul>\n' \
             '\t<li><a href="https://google.com">google</a></li>\n' \
             '\t<li>Lorem ipsum <a href="https://google.com">dolor</a> sit amet</li>\n' \

@@ -50,7 +50,7 @@ class TestParagraph(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<p id="lorem-ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n' \
             '</body>\n' \
             '</html>'
@@ -116,7 +116,7 @@ class TestParagraph(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<p>{^lorem-ipsum} Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n' \
             '<p id="lorem_ipsum-123">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n' \
             '</body>\n' \

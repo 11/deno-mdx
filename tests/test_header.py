@@ -44,7 +44,7 @@ class TestHeader(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<h3 id="lorem-ipsum-subheader-shouldnt-work">Lorem ipsum #### subheader shouldn\'t work</h3>\n' \
             '</body>\n' \
             '</html>'
@@ -80,7 +80,7 @@ class TestHeader(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<h1 id="lorem-ipsum-dolor">Lorem ipsum dolor</h1>\n' \
             '</body>\n' \
             '</html>'
@@ -140,7 +140,7 @@ class TestHeader(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<p>####### This shouldn\'t be a header</p>\n' \
             '<p>########### this doesn\'t make any sense</p>\n' \
             '</body>\n' \
@@ -223,7 +223,7 @@ class TestHeader(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<h1 id="header-1">header 1</h1>\n' \
             '<h2 id="header-2">header 2</h2>\n' \
             '<h3 id="header-3">header 3</h3>\n' \

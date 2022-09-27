@@ -28,7 +28,7 @@ class TestImage(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<img alt="alt text" src="#" />\n' \
             '</body>\n' \
             '</html>'
@@ -57,7 +57,7 @@ class TestImage(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<img alt="alt text" src="https://media.newyorker.com/photos/5a95a5b13d9089123c9fdb7e/1:1/w_3289,h_3289,c_limit/Petrusich-Dont-Mess-with-the-Birds.jpg" />\n' \
             '</body>\n' \
             '</html>'
@@ -88,7 +88,7 @@ class TestImage(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<img alt="eagle" src="/testcases/image/eagle.png" />\n' \
             '</body>\n' \
             '</html>'
@@ -112,7 +112,7 @@ class TestImage(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<img alt="alt text" src="#" />\n' \
             '</body>\n' \
             '</html>'

@@ -27,7 +27,7 @@ class TestMathblock(unittest.TestCase):
         expected_html = \
             '<!DOCTYPE html>\n' \
             '<html>\n' \
-            '<body\n' \
+            '<body>\n' \
             '<div>$$\\sqrt{3x-1}+(1+x)^2$$</div>\n' \
             '</body>\n' \
             '</html>'
