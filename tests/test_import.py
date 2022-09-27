@@ -153,3 +153,35 @@ class TestImport(unittest.TestCase):
             return
 
         assert False
+
+    def test_import_url_markdown(self):
+        """ test that importing via URLs works """
+
+        test_file = Path(f'{TESTCASE_DIR}/test_import_url.mdx')
+        expected_markdown = {
+            "body": None,
+            "filename": "test_import_url.mdx",
+            "head": [
+                {
+                    "async": False,
+                    "defer": False,
+                    "src": "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
+                    "tag": "script",
+                    "type": "import",
+                }
+            ],
+        }
+        assert markdown(test_file) == expected_markdown
+
+    def test_import_url_html(self):
+        """ test that importing via URLs works """
+
+        test_file = Path(f'{TESTCASE_DIR}/test_import_url.mdx')
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<head>\n' \
+            '\t<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>\n' \
+            '</head>\n' \
+            '</html>'
+        assert html(test_file) == expected_html
