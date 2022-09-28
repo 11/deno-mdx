@@ -1,77 +1,101 @@
 # Touchdown
 
-A convenient CLI tool and python module to parse Markdown
+A CLI and Python module to parse Markdown and Mdx
+
+### Table of Contents
+1. [Install](#install)
+2. [CLI](#cli)
+3. [Auto Sanitization](#auto-sanitization)
+3. [Touchdown's Python Library](#touchdowns-python-library)
+4. [Markdown Specification](#markdown-specification)
 
 
-### Install as Terminal Command
-
-I didn't feel this project was worthy enough to upload to a global registry. So instead here are steps to clone the project and bind to a terminal command
-```bash
-git clone https://github.com/11/touchdown.git /usr/bin/
+### Install
+```
+pip install git+https://github.com/11/touchdown@main
 ```
 
-Alias the `td` command to run the `touchdown` module inside your `.bashrc` (or `.bash_profile` on mac)
+### CLI 
+Touchdown has the capability to parse Markdown files into `HTML`, or into an alternative web-friendly `JSON` format. This alternative `JSON` format is useful for non-static websites, creating your own website build tools, or in situations where markup is asynchronously added to a page.
+
 ```bash
-alias td="python3 -m /usr/bin/touchdown/touchdown/"
+# Parse Markdown files into HTML
+touchdown blog.md
+touchdown --output=HTML blog.md
+
+# Write HTML output to file
+touchdown blog.md > blog.html
+
+# Parse Markdown to JSON
+touchdown --output=JSON blog.md 
+touchdown --output=JSON blog.md > blog.json
+
+# Write HTML output to file
+touchdown --output=JSON blog.md > blog.json
 ```
 
-Recompile your bash config to load the `td` command into your terminal session
-```bash
-source ~/.bashrc    # or ~/.bash_profile if you're on mac
+### Auto Sanitization
+Touchdown will automatically sanatize your Markdown. This in turn means that syntax errors are raised while parsing. 
+
+As an example, if you were to try parse the following markdown:
+```markdown
+* This should is bold
 ```
 
-From there you can start parsing markdown files
-```bash
-td blog.md
+In this scenario, Touchdown would throw an error because special characters (bold, italic, strikethrough, math, code, etc.) require a closing character. When an error occurs, Touchdown will print an error message to stderror
+```
+MarkdownSyntaxError - "File example.md": line 1
+  `*` does not have a matching closing character
 ```
 
-### Terminal Command Examples
-```bash
-#Parse markdown files into HTML
-td --output=html blog.md
+### Touchdown's Python Library
+Touchdown is also a python module that you can use in your own projects.
+```python3
+from pathlib import Path
+from touchdown import (
+    to_html, 
+    to_dict, 
+    to_json,
+    MarkdownSyntaxError,
+)
 
-# Parse markdown files and pretty print to stdout
-td --pretty blog.md
-
-# Parse all markdown files in a diectory
-td ../path/to/files/*.md
-
-# Parse all markdown files from one directory, and write the outputs into another directory
-td --output=./blogs/ ../path/to/markdown_files/*.md
-
-# Validate markdown syntax - kill process if invalid and log error message
-td --strict blog.md
+blog = Path('./blogs/blog.md')
+try:
+    blog_html = to_html(blog) # parses blod.md into a string of HTML
+    blog_dict = to_dict(blog) # parses blog.md into a web-friendly dictionary format
+    blog_json = to_json(blog) # parses blog.md into a web-friendly dictionary format, but then returns the result as a JSON string
+except MarkdownSyntaxError as md_err:
+    print(md_err)
 ```
 
-### How to use Python Module
-
-Quickly parse Markdown file
+### Custom Parsing
+As it is common in programs that parse text, Touchdown creates an intermediate format of the Markdown it parses. This intermediate format takes on the structure of an abstract syntax tree. This abstract syntax tree was designed to be easily parsable by anyone wanting to more control over the parsing process. 
 
 ```python3
-from touchdown import Markdown as Md
+from pathlib import Path
+from touchdown import (
+    to_ast,
+    MarkdownSyntaxError,
+)
 
-blog = Md('path/to/markdown_file.md')
-blog.parse()    # default output format is JSON
-blog.parse(output='html')    # outputs HTML
-blog.parse(output='json', pretty=True)    # outputs JSON and pretty prints it
+blog = Path('./blogs/blog.md')
+try:
+    ast = to_ast(blog)
+    
+    # the abstract syntax tree object is designed to be iterable.
+    # this was a design choice so users could easily iterate through
+    # each node in the tree tree without having to understand the details
+    # of the abstract syntax tree structure
+    for token in ast:
+        if token['type'] == 'header':
+            token['type'] == 'paragraph'
+            token['tag'] = 'p'
+except MarkdownSyntaxError as md_err:
+    print(md_error)
 ```
 
-Customize the Markdown parsing
-```python3
-from touchdown import Markdown as Md
+### Markdown Specification
+Touchdown's Markdown syntax comes in 2 flavors depending on the file extension you use with your Markdown:
+1. `.md`: If you use the `.md` extension, Touchdown will support the [following spec](https://github.com/11/touchdown/link-to-md-spec.md)
+2. `.mdx`: If you use the `.mdx` extension, Touchdown will use its custom [extended syntax spec](https://github.com/11/touchdown/link-to-mdx-spec.md)
 
-blog = Md('path/to/markdown_file.md')
-
-headers = []
-for symbol in blog:
-    if symbol['token'] == 'header':
-       headers.append(symbol)
-```
-
-### Why Develop Yet Another Markdown Parser?
-
-The simple answer is there just isn't a Markdown parser that I like. Ideally, I'd like a Markdown parser that has strict parsing rules, can output to several formats (JSON and HTML), hands over full control of the parsing loop to the user, and doesn't come bundled with other packages.
-
-I had enough custom needs that I figured I write it myself. Hopefully you'll find one of these features useful to your own projects.
-
-Happy Coding 👩‍💻
