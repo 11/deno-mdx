@@ -31,7 +31,7 @@ touchdown blog.md > blog.html
 touchdown --output=JSON blog.md 
 touchdown --output=JSON blog.md > blog.json
 
-# Write HTML output to file
+# Write JSON output to file
 touchdown --output=JSON blog.md > blog.json
 ```
 
@@ -70,7 +70,7 @@ except MarkdownSyntaxError as md_err:
 ```
 
 ### Custom Parsing
-As it is common in programs that parse text, Touchdown creates an intermediate format of the Markdown it parses. This intermediate format takes on the structure of an abstract syntax tree. This abstract syntax tree was designed to be easily parsable by anyone wanting to more control over the parsing process. 
+As it is common in programs that parse text, Touchdown creates an intermediate format of the Markdown it parses. This intermediate format takes on the structure of an abstract syntax tree. This abstract syntax tree was designed to be easily parsable by anyone wanting more control over the parsing process. 
 
 ```python3
 from pathlib import Path
@@ -83,10 +83,10 @@ blog = Path('./blogs/blog.md')
 try:
     ast = to_ast(blog)
     
-    # the abstract syntax tree object is designed to be iterable.
-    # this was a design choice so users could easily iterate through
-    # each node in the tree tree without having to understand the details
-    # of the abstract syntax tree structure
+    # The abstract syntax tree object is an iterable object.
+    # This was an intentional design choice so users could easily 
+    # iterate through each node in the tree tree without having 
+    # to understand the details of the abstract syntax tree structure.
     for token in ast:
         if token['type'] == 'header':
             token['type'] == 'paragraph'
