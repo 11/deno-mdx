@@ -26,24 +26,26 @@ def parse(files=[], output='HTML', destination=None):
             md_tokens = Markdown(file).markdown
             output = output.lower()
 
-            if destination is None and output == 'ast':
-                ast = dumps(md_tokens, sort_keys=True, indent=2)
-                print(tokens)
-            else:
-                destination.touch()
-                destination.write_text(tokens)
+            if destination is None:
+                if output == 'ast':
+                    ast = dumps(md_tokens, sort_keys=True, indent=2)
+                    print(tokens)
+                if output == 'html':
+                    html = Html(md_tokens).html
+                    print(html)
+                if output == 'json':
+                    pass
 
-            if destination is None and output == 'html':
-                html = Html(md_tokens).html
-                print(html)
-            else:
-                html = Html(md_tokens).html
-                destination.write_text(html)
+            if destination:
+                if output == 'ast':
+                    destination.touch()
+                    destination.write_text(tokens)
+                if output == 'html':
+                    html = Html(md_tokens).html
+                    destination.write_text(html)
+                if output == 'json':
+                    pass
 
-            if destination is None and output == 'json':
-                pass
-            else:
-                pass
         except MarkdownSyntaxError as err:
             print(err)
 

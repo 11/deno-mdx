@@ -132,17 +132,17 @@ class Html:
         tag = token['tag']
 
         if not is_defer and not is_async:
-            return f'<{tag} src="{src}"></{tag}>'
+            return f'<{tag} type="text/javascript" src="{src}"></{tag}>'
         elif is_async:
-            return f'<{tag} src="{src}" async></{tag}>'
+            return f'<{tag} type="text/javascript" src="{src}" async></{tag}>'
         elif is_defer:
-            return f'<{tag} defer src="{src}"></{tag}>'
+            return f'<{tag} defer type="text/javascript" src="{src}"></{tag}>'
 
     def _write_link_stylesheet(self, token):
         rel = token['rel']
         href = token['href']
         tag = token['tag']
-        return f'<{tag} rel={rel} href="{href}"></{tag}>'
+        return f'<{tag} rel="{rel}" href="{href}"></{tag}>'
 
     def _write_paragraph(self, token):
         tag = token['tag']

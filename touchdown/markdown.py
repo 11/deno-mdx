@@ -1,8 +1,9 @@
 import re
 import pdb
-from pathlib import Path
-from pprint import pprint
 from io import StringIO as StringBuilder
+from pprint import pprint
+from pathlib import Path
+from urllib.parse import urlparse, ParseResult
 
 from .errors import MarkdownSyntaxError
 from .constants import SPECIAL_CHARS, MARKDOWN_REGEXS
@@ -151,7 +152,7 @@ class Markdown:
             'page_tag': 'body',
             'type': 'mathblock',
             'tag': 'div',
-            'content': f'$${mathblock}$$'
+            'content': f'\\[{mathblock}\\]'
         }
 
     def _parse_codeblock(self, reader):
@@ -206,12 +207,21 @@ class Markdown:
 
         is_async = match[0][0] == 'async'
         is_defer = match[0][1] == 'defer'
-        uri = match[0][2]
+        uri = urlparse(match[0][2]) \
+            if match[0][2][:4] == 'http' \
+            else Path(match[0][2])
 
-        src_uri = Path(uri)
-        if src_uri.suffix not in set(['.js', '.css']):
-            raise MarkdownSyntaxError(self._filepath, self._lineno, f'Trying to import unrecognized filetype `{src_uri.suffix}`')
-        elif src_uri.suffix == '.css' and is_async:
+        # if the uri is a URL, it's possible for their to be query parameters after the file extension
+        # we split at a `?` character if there is one to ensure we get no query parameters and just the
+        # the file type
+        is_url = type(uri) == ParseResult
+        uri_suffix = uri.suffix \
+            if not is_url \
+            else f'.{uri.path.split(".")[-1]}'
+
+        if uri_suffix not in set(['.js', '.css']):
+            raise MarkdownSyntaxError(self._filepath, self._lineno, f'Trying to import unrecognized filetype `{uri_suffix}`')
+        elif uri_suffix == '.css' and is_async:
             raise MarkdownSyntaxError(self._filepath, self._lineno, f'Cannot import css with `async` - try removing `async`')
         elif is_async and is_defer:
             raise MarkdownSyntaxError(
@@ -220,7 +230,7 @@ class Markdown:
                 f'Invalid import syntax - cannot use both `async` and `defer`'
             )
 
-        if src_uri.is_dir():
+        if not is_url and uri.is_dir():
             return {
                 'page_tag': 'head',
                 'type': 'import',
@@ -229,22 +239,22 @@ class Markdown:
                 'defer': is_defer,
                 'src': f'{uri}/index.js'
             }
-        elif src_uri.suffix == '.css' :
+        elif uri_suffix == '.css':
             return {
                 'page_tag': 'head',
                 'type': 'import',
                 'tag': 'link',
-                'href': uri,
+                'href': uri.geturl() if is_url else str(uri),
                 'rel': 'preload' if is_defer else 'stylesheet',
             }
-        elif src_uri.suffix == '.js':
+        elif uri_suffix == '.js':
             return {
                 'page_tag': 'head',
                 'type': 'import',
                 'tag': 'script',
                 'async': is_async,
                 'defer': is_defer,
-                'src': uri,
+                'src': uri.geturl() if is_url else str(uri),
             }
 
     def _parse_list(self, reader, list_type, list_tag):
@@ -321,7 +331,7 @@ class Markdown:
         idx = 0
         while idx < len(maths):
             curr = maths[idx] 
-            curr['content'] = f'${curr["content"]}$'
+            curr['content'] = f'\\({curr["content"]}\\)'
 
             start = None
             end = None

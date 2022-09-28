@@ -14,7 +14,7 @@ class TestMathblock(unittest.TestCase):
         expected_markdown = {
             'head': None,
             'body': [{
-                'content': '$$\\sqrt{3x-1}+(1+x)^2$$',
+                'content': '\\[\\sqrt{3x-1}+(1+x)^2\\]',
                 'tag': 'div',
                 'type': 'mathblock'
                 }],
@@ -28,7 +28,7 @@ class TestMathblock(unittest.TestCase):
             '<!DOCTYPE html>\n' \
             '<html>\n' \
             '<body>\n' \
-            '<div>$$\\sqrt{3x-1}+(1+x)^2$$</div>\n' \
+            '<div>\\[\\sqrt{3x-1}+(1+x)^2\\]</div>\n' \
             '</body>\n' \
             '</html>'
         assert html(test_file) == expected_html

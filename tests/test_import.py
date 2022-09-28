@@ -52,7 +52,7 @@ class TestImport(unittest.TestCase):
             '<!DOCTYPE html>\n' \
             '<html>\n' \
             '<head>\n' \
-            '\t<script src="test.js" async></script>\n' \
+            '\t<script type="text/javascript" src="test.js" async></script>\n' \
             '</head>\n' \
             '</html>'
         assert html(test_file) == expected_html
@@ -97,8 +97,8 @@ class TestImport(unittest.TestCase):
             '<!DOCTYPE html>\n' \
             '<html>\n' \
             '<head>\n' \
-            '\t<script defer src="test.js"></script>\n' \
-            '\t<link rel=preload href="test.css"></link>\n' \
+            '\t<script defer type="text/javascript" src="test.js"></script>\n' \
+            '\t<link rel="preload" href="test.css"></link>\n' \
             '</head>\n' \
             '</html>'
         assert html(test_file) == expected_html
@@ -136,8 +136,8 @@ class TestImport(unittest.TestCase):
             '<!DOCTYPE html>\n'\
             '<html>\n'\
             '<head>\n'\
-            '\t<script src="test.js"></script>\n' \
-            '\t<link rel=stylesheet href="styles/index.css"></link>\n' \
+            '\t<script type="text/javascript" src="test.js"></script>\n' \
+            '\t<link rel="stylesheet" href="styles/index.css"></link>\n' \
             '</head>\n'\
             '</html>'
         assert html(test_file) == expected_html
@@ -181,7 +181,7 @@ class TestImport(unittest.TestCase):
             '<!DOCTYPE html>\n' \
             '<html>\n' \
             '<head>\n' \
-            '\t<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>\n' \
+            '\t<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>\n' \
             '</head>\n' \
             '</html>'
         assert html(test_file) == expected_html
