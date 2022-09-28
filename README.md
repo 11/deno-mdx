@@ -6,8 +6,9 @@ A CLI and Python module to parse Markdown and Mdx
 1. [Install](#install)
 2. [CLI](#cli)
 3. [Auto Sanitization](#auto-sanitization)
-3. [Touchdown's Python Library](#touchdowns-python-library)
-4. [Markdown Specification](#markdown-specification)
+4. [Touchdown's Python Library](#touchdowns-python-library)
+5. [Custom Parsing](#custom-parsing)
+6. [Markdown Specification](#markdown-specification)
 
 
 ### Install
