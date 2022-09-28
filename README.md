@@ -40,7 +40,7 @@ Touchdown will automatically sanatize your Markdown. This in turn means that syn
 
 As an example, if you were to try parse the following markdown:
 ```markdown
-* This should is bold
+* This text should be bold
 ```
 
 In this scenario, Touchdown would throw an error because special characters (bold, italic, strikethrough, math, code, etc.) require a closing character. When an error occurs, Touchdown will print an error message to stderror
