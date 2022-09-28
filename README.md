@@ -97,6 +97,6 @@ except MarkdownSyntaxError as md_err:
 
 ### Markdown Specification
 Touchdown's Markdown syntax comes in 2 flavors depending on the file extension you use with your Markdown:
-1. `.md`: If you use the `.md` extension, Touchdown will support the [following spec](https://github.com/11/touchdown/link-to-md-spec.md)
+1. `.md`: If you use the `.md` extension, Touchdown will support the [generic syntax spec](https://github.com/11/touchdown/link-to-md-spec.md)
 2. `.mdx`: If you use the `.mdx` extension, Touchdown will use its custom [extended syntax spec](https://github.com/11/touchdown/link-to-mdx-spec.md)
 
