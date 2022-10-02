@@ -1,18 +1,14 @@
-import pdb
+import json
+
+
 class Html:
     def __init__(self, md_tokens):
         # class variables
         self._md_tokens = md_tokens
         self._content = None
 
-        # properties
-        self._html = self.run()
-
     @property
     def html(self):
-        return self._html
-
-    def run(self):
         head = '\n'.join([f'\t{element}' for element in self._head_iter()])
         body = '\n'.join([element for element in self._body_iter()])
 
@@ -40,6 +36,27 @@ class Html:
             f'<head>\n{head}\n</head>\n' \
             f'<body>\n{body}\n</body>\n' \
             '</html>'
+
+    @property
+    def json(self):
+        filename = self._md_tokens['filename']
+        content = '\n'.join([element for element in self._body_iter()])
+
+        imports = None
+        if self._md_tokens['head'] is not None:
+            imports: [
+                f'import {token["src"]}' \
+                for token in self._md_tokens['head'] \
+                if token is not None \
+                    and token['tag'] == 'script' \
+                    and not token['is_url']
+            ]
+
+        return {
+            'filename': filename,
+            'imports': imports,
+            'content': content,
+        }
 
     def _head_iter(self):
         head = self._md_tokens['head']

@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 from pprint import pprint
 
-from touchdown import markdown, html
+from touchdown import to_ast, to_html
 
 
 TESTCASE_DIR = './testcases/mathblock'
@@ -20,7 +20,7 @@ class TestMathblock(unittest.TestCase):
                 }],
             'filename': 'test_single_mathblock.md'
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_single_mathblock_html(self):
         test_file = Path(f'{TESTCASE_DIR}/test_single_mathblock.md')
@@ -31,4 +31,4 @@ class TestMathblock(unittest.TestCase):
             '<div>\\[\\sqrt{3x-1}+(1+x)^2\\]</div>\n' \
             '</body>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html

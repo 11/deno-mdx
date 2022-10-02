@@ -2,52 +2,38 @@ from json import dumps
 from pathlib import Path
 from argparse import ArgumentParser
 
-from .html import Html
-from .markdown import Markdown
 from .errors import MarkdownSyntaxError
+from . import (
+    to_ast, 
+    to_html, 
+    to_json,
+)
 
 
 def parseargs():
     parser = ArgumentParser(prog='touchdown', description='Parse markdown files')
 
     # positional args
-    parser.add_argument('files', metavar='Files', type=Path, nargs='+', help='Set of files that will parsed')
+    parser.add_argument('file', metavar='File', type=Path, help='files that will parsed')
 
     # optional args
-    parser.add_argument('-D', '--destination', type=Path, default=None, help='Output directory')
     parser.add_argument('-O', '--output', type=str, choices=['JSON', 'HTML', 'AST'], default='HTML', help='Specify output format (default: HTML)')
 
     return vars(parser.parse_args())
 
 
-def parse(files=[], output='HTML', destination=None):
-    for file in files:
-        try:
-            md_tokens = Markdown(file).markdown
-            output = output.lower()
-
-            if destination is None:
-                if output == 'ast':
-                    ast = dumps(md_tokens, sort_keys=True, indent=2)
-                    print(tokens)
-                if output == 'html':
-                    html = Html(md_tokens).html
-                    print(html)
-                if output == 'json':
-                    pass
-
-            if destination:
-                if output == 'ast':
-                    destination.touch()
-                    destination.write_text(tokens)
-                if output == 'html':
-                    html = Html(md_tokens).html
-                    destination.write_text(html)
-                if output == 'json':
-                    pass
-
-        except MarkdownSyntaxError as err:
-            print(err)
+def parse(file=None, output='HTML', destination=None):
+    try:
+        output = output.lower()
+        if destination is None:
+            if output == 'ast':
+                print(to_ast(file))
+            if output == 'html':
+                print(to_html(file))
+            if output == 'json':
+                print(to_json(file))
+    except MarkdownSyntaxError as err:
+        print(err)
 
 
 def touchdown():

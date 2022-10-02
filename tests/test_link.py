@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 from pprint import pprint
 
-from touchdown import html, markdown
+from touchdown import to_html, to_ast 
 
 
 TESTCASE_DIR = './testcases/link'
@@ -60,7 +60,7 @@ class TestLink(unittest.TestCase):
             "filename": "test_link_in_blockquote.md",
         }
 
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_link_in_blockquote_html(self):
         """ testing links are parsed out correctly inside blockquote """
@@ -73,7 +73,7 @@ class TestLink(unittest.TestCase):
             '<blockquote>Lorem ipsum dolor sit amet, consectetur <a href="https://google.com">adipiscing elit</a>, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</blockquote>\n' \
             '</body>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_link_in_decorated_text_markdown(self):
         """ test that styling is still correctly applied to links after parsing text decoration """
@@ -140,7 +140,7 @@ class TestLink(unittest.TestCase):
             ],
             "filename": "test_link_in_decorated_text.md",
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_link_in_decorated_text_html(self):
         """ test that styling is still correctly applied to links after parsing text decoration """
@@ -153,7 +153,7 @@ class TestLink(unittest.TestCase):
             '<p>Lorem ipsum <b>dolor sit </b><b><s>amet, </s></b><b><s><a href="https://google.com">consectetur</a></s></b><b><s> adipiscing</s></b><b>elit</b>, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>\n' \
             '</body>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_link_in_header_markdown(self):
         """ test links are correctly applied inside headers """
@@ -229,7 +229,7 @@ class TestLink(unittest.TestCase):
             ],
             "filename": "test_link_in_header.md",
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_link_in_header_html(self):
         """ test links are correctly applied inside headers """
@@ -244,7 +244,7 @@ class TestLink(unittest.TestCase):
             '<h4 id="lorem-ipsum-dolor-sit-amet">Lorem <b>ipsum </b><b><a href="https://google.com">dolor</a></b><b> sit</b> amet</h4>\n' \
             '</body>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_link_in_ordered_list_markdown(self):
         """ test text inside ordered lists is correctly parsed """
@@ -323,7 +323,7 @@ class TestLink(unittest.TestCase):
             ],
             "filename": "test_link_in_ordered_list.md",
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_link_in_ordered_list_html(self):
         """ test text inside ordered lists is correctly parsed """
@@ -341,7 +341,7 @@ class TestLink(unittest.TestCase):
             '</body>\n' \
             '</html>'
 
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_link_in_plain_text_markdown(self):
         """ sanity check that tests in plain text work """
@@ -395,7 +395,7 @@ class TestLink(unittest.TestCase):
             "filename": "test_link_in_plain_text.md",
         }
 
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_link_in_plain_text_html(self):
         """ sanity check that tests in plain text work """
@@ -408,7 +408,7 @@ class TestLink(unittest.TestCase):
             '<p><a href="https://google.com">Lorem ipsum dolor sit amet</a>, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <a href="https://google.com">Ut enim ad minim veniam</a>, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat</p>\n' \
             '</body>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_link_in_unordered_list_markdown(self):
         """ test text inside unordered lists is correctly parsed """
@@ -487,7 +487,7 @@ class TestLink(unittest.TestCase):
             ],
             "filename": "test_link_in_unordered_list.md",
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_link_in_unordered_list_html(self):
         """ test text inside unordered lists is correctly parsed """
@@ -504,4 +504,4 @@ class TestLink(unittest.TestCase):
             '</ul>\n' \
             '</body>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html

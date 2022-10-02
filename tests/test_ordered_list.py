@@ -1,7 +1,7 @@
 import unittest
 from pathlib import Path
 
-from touchdown import markdown, html
+from touchdown import to_ast, to_html
 
 
 TESTCASE_DIR = './testcases/list/ordered'
@@ -99,7 +99,7 @@ class TestOrderedList(unittest.TestCase):
             "filename": "test_list_element_numbers_are_corrected.md",
         }
 
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_list_element_numbers_are_corrected_html(self):
         """ test that the list element number is normalized """
@@ -119,7 +119,7 @@ class TestOrderedList(unittest.TestCase):
             '</body>\n' \
             '</html>'
  
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_several_list_elements_markdown(self):
         """ test that a single orderd list will append multiple list elements """
@@ -194,7 +194,7 @@ class TestOrderedList(unittest.TestCase):
             "filename": "test_several_list_elements.md",
         }
  
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_several_list_elements_html(self):
         """ test that a single orderd list will append multiple list elements """
@@ -213,7 +213,7 @@ class TestOrderedList(unittest.TestCase):
             '</body>\n' \
             '</html>'
  
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_several_lists_markdown(self):
         """ test that list elements are correctly appended to their respective list """
@@ -331,7 +331,7 @@ class TestOrderedList(unittest.TestCase):
             "filename": "test_several_lists.md",
         }
 
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_several_lists_html(self):
         """ test that list elements are correctly appended to their respective list """
@@ -355,7 +355,7 @@ class TestOrderedList(unittest.TestCase):
             '</ol>\n' \
             '</body>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_single_list_element_markdown(self):
         """ sanity test for creating a ordered list with 1 list element """
@@ -384,7 +384,7 @@ class TestOrderedList(unittest.TestCase):
             "filename": "test_single_list_element.md",
         }
 
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_single_list_element_html(self):
         """ sanity test for creating a ordered list with 1 list element """
@@ -400,4 +400,4 @@ class TestOrderedList(unittest.TestCase):
             '</body>\n' \
             '</html>'
 
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html

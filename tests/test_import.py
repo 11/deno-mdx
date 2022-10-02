@@ -3,8 +3,8 @@ from pathlib import Path
 from pprint import pprint
 
 from touchdown import (
-    html,
-    markdown,
+    to_html,
+    to_ast,
     MarkdownSyntaxError,
 )
 
@@ -18,7 +18,7 @@ class TestImport(unittest.TestCase):
 
         try:
             test_file = Path(f'{TESTCASE_DIR}/test_async_defer_import_creates_error.mdx')
-            markdown(test_file)
+            to_ast(test_file)
         except MarkdownSyntaxError as err:
             assert True
             return
@@ -36,13 +36,14 @@ class TestImport(unittest.TestCase):
                 {
                     "async": True,
                     "defer": False,
+                    "url": False,
                     "src": "test.js",
                     "tag": "script",
                     "type": "import",
                 }
             ],
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_async_import_html(self):
         """ test async import works on JS files """
@@ -55,14 +56,14 @@ class TestImport(unittest.TestCase):
             '\t<script type="text/javascript" src="test.js" async></script>\n' \
             '</head>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_async_import_with_css_creates_error(self):
         """ test that async imports fail when loading CSS file """
 
         try:
             test_file = Path(f'{TESTCASE_DIR}/test_async_import_with_css_creates_error.mdx')
-            markdown(test_file)
+            to_ast(test_file)
         except MarkdownSyntaxError as err:
             assert True
             return
@@ -81,13 +82,20 @@ class TestImport(unittest.TestCase):
                     "tag": "script",
                     "async": False,
                     "defer": True,
+                    "url": False,
                     "src": "test.js",
                 },
-                {"type": "import", "tag": "link", "href": "test.css", "rel": "preload"},
+                {
+                    "type": "import", 
+                    "tag": "link", 
+                    "url": False,
+                    "href": "test.css", 
+                    "rel": "preload"
+                },
             ],
             "body": None,
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_defer_import_html(self):
         """ test that defer imports for JS and CSS files work """
@@ -101,7 +109,7 @@ class TestImport(unittest.TestCase):
             '\t<link rel="preload" href="test.css"></link>\n' \
             '</head>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_import_markdown(self):
         """ sanity check that importing JS and CSS files work"""
@@ -114,19 +122,21 @@ class TestImport(unittest.TestCase):
                 {
                     "async": False,
                     "defer": False,
+                    "url": False,
                     "src": "test.js",
                     "tag": "script",
                     "type": "import",
                 },
                 {
                     "href": "styles/index.css",
+                    "url": False,
                     "rel": "stylesheet",
                     "tag": "link",
                     "type": "import",
                 },
             ],
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_import_html(self):
         """ sanity check that importing JS and CSS files work"""
@@ -140,14 +150,14 @@ class TestImport(unittest.TestCase):
             '\t<link rel="stylesheet" href="styles/index.css"></link>\n' \
             '</head>\n'\
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_import_in_wrong_filetype(self):
         """ test that you can not use import statement in `.md` files"""
 
         try:
             test_file = Path(f'{TESTCASE_DIR}/test_import_in_wrong_filetype.md')
-            markdown(test_file)
+            to_ast(test_file)
         except MarkdownSyntaxError as err:
             assert True
             return
@@ -168,10 +178,11 @@ class TestImport(unittest.TestCase):
                     "src": "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js",
                     "tag": "script",
                     "type": "import",
+                    "url": True,
                 }
             ],
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_import_url_html(self):
         """ test that importing via URLs works """
@@ -184,4 +195,4 @@ class TestImport(unittest.TestCase):
             '\t<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>\n' \
             '</head>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html

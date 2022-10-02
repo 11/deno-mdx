@@ -2,7 +2,7 @@ import unittest
 from pprint import pprint
 from pathlib import Path
 
-from touchdown import markdown, html
+from touchdown import to_ast, to_html
 
 
 TESTCASE_DIR = './testcases/list/unordered'
@@ -82,7 +82,7 @@ class TestUnorderedList(unittest.TestCase):
             "filename": "test_several_list_elements.md",
         }
 
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_several_list_elements_html(self):
         """ tests that a single list will append multiple list elements """
@@ -101,7 +101,7 @@ class TestUnorderedList(unittest.TestCase):
             '</body>\n' \
             '</html>'
 
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_several_lists_markdown(self):
         """ tests if newline starts a new list """
@@ -218,7 +218,7 @@ class TestUnorderedList(unittest.TestCase):
             ],
             "filename": "test_several_lists.md",
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_several_lists_html(self):
         """ tests if newline starts a new list """
@@ -242,7 +242,7 @@ class TestUnorderedList(unittest.TestCase):
             '</ul>\n' \
             '</body>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_single_list_element_markdown(self):
         """ sanity test that validates if a single list element is correctly parsed """
@@ -270,7 +270,7 @@ class TestUnorderedList(unittest.TestCase):
             ],
             "filename": "test_single_list_element.md",
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_single_list_element_html(self):
         """ sanity test that validates if a single list element is correctly parsed """
@@ -285,4 +285,4 @@ class TestUnorderedList(unittest.TestCase):
             '</ul>\n' \
             '</body>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html

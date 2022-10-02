@@ -1,5 +1,4 @@
 import re
-import pdb
 from io import StringIO as StringBuilder
 from pprint import pprint
 from pathlib import Path
@@ -30,9 +29,6 @@ class Markdown:
         self._filepath = Path(file)
         self._lineno = 0
         self._reader = None
-
-        # properties 
-        self._markdown = self.run()
 
     def __repr__(self):
         return f'File {self._filepath.name} - Lines processed {self._lineno}'
@@ -73,9 +69,6 @@ class Markdown:
 
     @property
     def markdown(self):
-        return self._markdown
-
-    def run(self):
         head = []
         body = []
         for token in self:
@@ -99,20 +92,21 @@ class Markdown:
             if includes_id \
             else re.findall(MARKDOWN_REGEXS['header'], line)
 
+        # Check for syntax errors
+        # 1. raise error if a header with an ID is incorrectly formatted
+        # 2. raise error if a regular header is incorrectly formatted
         if includes_id and len(match) != 1 and len(match[0]) != 3:
-            # raising error if a header with an ID is incorrectly formatted
             raise MarkdownSyntaxError(self._filepath, self._lineno, '')
         elif not includes_id and len(match) != 1 and len(match[0]) != 2:
-            # raising error if a header is incorrectly formatted
             raise MarkdownSyntaxError(self._filepath, self._lineno, '')
 
-
+        # get header content and parse inner text
         header = match[0][0]
         text_token = self._parse_text(match[0][-1])
 
         # need to join all the actual text in the header node 
         # before generating an ID
-        header_id_text= ''.join([
+        header_id_text = ''.join([
             token['content']
             for token in text_token['content'] 
         ])
@@ -189,6 +183,10 @@ class Markdown:
                 f'Trying to use `import` statement inside file with `.md` extension - try changing `{self._filepath}` extension to `.mdx`'
             )
 
+        # Check for syntax errors
+        # 1. check that the import statement is correctly formatted
+        # 2 & 3. an import statement can only include `defer` OR `async, NOT BOTH 
+        # the last 2 checks ensure that the import statement is not `defer async import ...` 
         match = re.findall(MARKDOWN_REGEXS['import'], line)
         if len(match) != 1:
             raise MarkdownSyntaxError(self._filepath, self._lineno, '')
@@ -205,8 +203,15 @@ class Markdown:
                 f'Invalid import syntax - do not recognize `{match[0][1]}`'
             )
 
+        # extract information from import statement
         is_async = match[0][0] == 'async'
         is_defer = match[0][1] == 'defer'
+
+        # uri is a special case because a URI can either be a URL to a JS/CSS file
+        # or it can be a local path to a a JS/CSS file on the user's machine
+        #
+        # TODO: It'd be a QoL functionality to throw a parsing error if the file
+        # is not found on the local machine - it would save debugging within the browser
         uri = urlparse(match[0][2]) \
             if match[0][2][:4] == 'http' \
             else Path(match[0][2])
@@ -233,6 +238,7 @@ class Markdown:
         if not is_url and uri.is_dir():
             return {
                 'page_tag': 'head',
+                'url': False,
                 'type': 'import',
                 'tag': 'script',
                 'async': is_async,
@@ -244,6 +250,7 @@ class Markdown:
                 'page_tag': 'head',
                 'type': 'import',
                 'tag': 'link',
+                'url': is_url,
                 'href': uri.geturl() if is_url else str(uri),
                 'rel': 'preload' if is_defer else 'stylesheet',
             }
@@ -252,6 +259,7 @@ class Markdown:
                 'page_tag': 'head',
                 'type': 'import',
                 'tag': 'script',
+                'url': is_url,
                 'async': is_async,
                 'defer': is_defer,
                 'src': uri.geturl() if is_url else str(uri),

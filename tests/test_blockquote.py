@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 from pprint import pprint
 
-from touchdown import markdown, html
+from touchdown import to_ast, to_html
 
 TESTCASE_DIR = './testcases/blockquote'
 
@@ -71,7 +71,7 @@ class TestBlockquote(unittest.TestCase):
             "filename": "test_multiple_blockquotes.md",
         }
 
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_multiple_blockquotes_html(self):
         """ test that multiple blockquotes a line apart create their own separate blockquote tag """
@@ -86,7 +86,7 @@ class TestBlockquote(unittest.TestCase):
             '<blockquote>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</blockquote>\n' \
             '</body>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_single_blockquote_markdown(self):
         """ sanity check that a single blockquote works """
@@ -117,7 +117,7 @@ class TestBlockquote(unittest.TestCase):
             "filename": "test_single_blockquote.md",
         }
 
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_single_blockquote_html(self):
         """ sanity check that a single blockquote works """
@@ -130,7 +130,7 @@ class TestBlockquote(unittest.TestCase):
             '<blockquote>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </blockquote>\n' \
             '</body>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_merge_blockquotes_markdown(self):
         test_file = Path(f'{TESTCASE_DIR}/test_merge_blockquotes.md')

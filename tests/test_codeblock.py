@@ -2,7 +2,7 @@ import unittest
 from pprint import pprint
 from pathlib import Path
 
-from touchdown import markdown, html
+from touchdown import to_ast, to_html
 
 
 TESTCASE_DIR = './testcases/codeblock'
@@ -27,7 +27,7 @@ class TestCodeblock(unittest.TestCase):
             ],
             "filename": "test_codeblock_with_backticks.md",
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_codeblock_with_backticks_html(self):
         """ test that backticks aren't incorrectly mistaken for a codeblock start/end symbol """
@@ -44,7 +44,7 @@ class TestCodeblock(unittest.TestCase):
             '</pre>\n' \
             '</body>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_codeblock_with_language_tag_markdown(self):
         """ test the language tag is parsed and included as metadata """
@@ -66,7 +66,7 @@ class TestCodeblock(unittest.TestCase):
             ],
             "filename": "test_codeblock_with_language_tag.md",
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_codeblock_with_language_tag_html(self):
         """ test the language tag is parsed and included as metadata """
@@ -85,7 +85,7 @@ class TestCodeblock(unittest.TestCase):
             '</pre>\n' \
             '</body>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_multiple_codeblocks_markdown(self):
         """ test that two codewblocks next to eachother are parsed correctly """
@@ -115,7 +115,7 @@ class TestCodeblock(unittest.TestCase):
             ],
             "filename": "test_multiple_codeblocks.md",
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_multiple_codeblocks_html(self):
         """ test that two codewblocks next to eachother are parsed correctly """
@@ -140,7 +140,7 @@ class TestCodeblock(unittest.TestCase):
             '</body>\n' \
             '</html>'
 
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_single_codeblock_markdown(self):
         """ sanity check that a basic codeblock is correctly parsed """
@@ -158,7 +158,7 @@ class TestCodeblock(unittest.TestCase):
             ],
             "filename": "test_single_codeblock.md",
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_single_codeblock_html(self):
         """ sanity check that a basic codeblock is correctly parsed """
@@ -174,7 +174,7 @@ class TestCodeblock(unittest.TestCase):
             '</body>\n' \
             '</html>'
 
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_single_codeblock_multiline_markdown(self):
         """ testing that multiple lines of code are contained within a codeblock """
@@ -195,7 +195,7 @@ class TestCodeblock(unittest.TestCase):
             ],
             "filename": "test_single_codeblock_multiline.md",
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_single_codeblock_multiline_html(self):
         """ testing that multiple lines of code are contained within a codeblock """
@@ -214,4 +214,4 @@ class TestCodeblock(unittest.TestCase):
             '</body>\n' \
             '</html>'
 
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html

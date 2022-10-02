@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 from pprint import pprint
 
-from touchdown import markdown, html
+from touchdown import to_ast, to_html
 
 
 TESTCASE_DIR = './testcases/header'
@@ -35,7 +35,7 @@ class TestHeader(unittest.TestCase):
             "filename": "test_header_inside_header.md",
         }
 
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_header_inside_header_html(self):
         """ test that a # characters inside header text does not produce a header """
@@ -48,7 +48,7 @@ class TestHeader(unittest.TestCase):
             '<h3 id="lorem-ipsum-subheader-shouldnt-work">Lorem ipsum #### subheader shouldn\'t work</h3>\n' \
             '</body>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_header_with_id_markdown(self):
         """ test that a custom ID can be added to a header """
@@ -71,7 +71,7 @@ class TestHeader(unittest.TestCase):
             ],
             "filename": "test_header_with_id.md",
         }
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_header_with_id_html(self):
         """ test that a custom ID can be added to a header """
@@ -84,7 +84,7 @@ class TestHeader(unittest.TestCase):
             '<h1 id="lorem-ipsum-dolor">Lorem ipsum dolor</h1>\n' \
             '</body>\n' \
             '</html>'
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_invalid_headers_markdown(self):
         """ sanity check that 7+ # characters doesn't produce a header"""
@@ -131,7 +131,7 @@ class TestHeader(unittest.TestCase):
             "filename": "test_invalid_headers.md",
         }
 
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_invalid_headers_html(self):
         """ sanity check that 7+ # characters doesn't produce a header"""
@@ -146,7 +146,7 @@ class TestHeader(unittest.TestCase):
             '</body>\n' \
             '</html>'
 
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
 
     def test_valid_headers_markdown(self):
         """ sanity check that all 6 header types are correctly parsed """
@@ -214,7 +214,7 @@ class TestHeader(unittest.TestCase):
             "filename": "test_valid_headers.md",
         }
  
-        assert markdown(test_file) == expected_markdown
+        assert to_ast(test_file) == expected_markdown
 
     def test_valid_headers_html(self):
         """ sanity check that all 6 header types are correctly parsed """
@@ -233,4 +233,4 @@ class TestHeader(unittest.TestCase):
             '</body>\n' \
             '</html>'
 
-        assert html(test_file) == expected_html
+        assert to_html(test_file) == expected_html
