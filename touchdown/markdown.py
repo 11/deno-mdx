@@ -1,4 +1,5 @@
 import re
+import pdb
 from io import StringIO as StringBuilder
 from pprint import pprint
 from pathlib import Path
@@ -84,10 +85,10 @@ class Markdown:
             return self._parse_mathblock(self._reader)
         elif re.match(MARKDOWN_REGEXS['import'], line):
             return self._parse_import(line)
+        elif len(line) >= 1 and line[0] == '<':
+            return self._parse_web_component(self._reader)
         elif re.match(MARKDOWN_REGEXS['paragraph_id'], line):
             return self._parse_paragraph(line, includes_id=True)
-        elif line[0] == '<':
-            return self._parse_web_component(line, reader)
         else:
             return self._parse_paragraph(line)
 
@@ -309,20 +310,25 @@ class Markdown:
 
     def _parse_web_component(self, reader):
         reader.backstep()
-        output = {
-            'page_tag': 'body'
-            'type': 'web_component',
-            'tag': None,
-            'content': ''
-        }
 
         # find open tag
+        tag = None
+        match = None
+        builder = StringBuilder()
+        pdb.set_trace()
         while (line := next(reader, None)):
-            pass
+            builder.write(line)
+            if re.match(MARKDOWN_REGEXS['web_component'], builder.getvalue()):
+                pass
 
-        # find close tag
+        # TODO: find close tag
 
-        return output
+        return {
+            'page_tag': 'body',
+            'type': 'web_component',
+            'tag': None,
+            'content': '',
+        }
 
     def _parse_image(self, line):
         match = re.findall(MARKDOWN_REGEXS['image'], line)
