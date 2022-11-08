@@ -89,6 +89,8 @@ class Html:
             return self._write_codeblock(token)
         elif token['type'] == 'mathblock':
             return self._write_mathblock(token)
+        elif token['type'] == 'web_component':
+            return self._write_web_component(token)
         elif token['type'] == 'import' and token['tag'] == 'script':
             return self._write_script(token)
         elif token['type'] == 'import' and token['tag'] == 'link':
@@ -224,3 +226,6 @@ class Html:
             else token['href']
 
         return f'{open_tags}<a href="{href}">{content}</a>{close_tags}'
+
+    def _write_web_component(self, token):
+        return f'\t{token["content"]}'

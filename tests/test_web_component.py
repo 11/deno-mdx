@@ -29,12 +29,27 @@ class TestWebComponent(unittest.TestCase):
 
     def test_web_component_without_attributes_markdown(self):
         test_file = f'{TESTCASE_DIR}/test_web_component_without_attributes.md'
-        expected_markdown = {}
-
+        expected_markdown = {
+            'body': [{
+                'content': '<test-element></test-element>',
+                'tag': 'test-element',
+                'type': 'web_component'
+            }],
+            'filename': 'test_web_component_without_attributes.md',
+            'head': None
+        }
         assert to_ast(test_file) == expected_markdown
 
-    def test_web_component_no_attributes_html(self):
-        pass
+    def test_web_component_without_attributes_html(self):
+        test_file = f'{TESTCASE_DIR}/test_web_component_without_attributes.md'
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body>\n' \
+            '\t<test-element></test-element>\n' \
+            '</body>\n' \
+            '</html>'
+        assert to_html(test_file) == expected_html
 
     def test_web_component_without_closing_tag_markdown(self):
         pass

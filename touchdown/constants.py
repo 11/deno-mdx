@@ -43,10 +43,16 @@ MARKDOWN_REGEXS = {
     # 4. async defer import <FILE>   cannot be used at all - invalid syntax
     'import': r"(?:(async)?[^\S\r\n]+)?(?:(defer)?[^\S\r\n]+)?import '([A-Za-z0-9-._~:/\?\#\[\]@!\$,&'\(\)\*\+,;%=]+)'[\n\r]*?",
 
-    # NOTE: this regex does not work on debuggex
-    # this regex captures any valid web-component open tag. close tags
-    # are processed afterwards
-    'web_component': r'<([a-zA-Z]+-[a-zA-Z]+)(.|[\n\r])*?(?<!=| )>[\n\r]?'
+    # NOTE: debuggex cannot render this regex
+    # web-component support is in beta - not supported features:
+    #   1. Nesting outermost web-component does not work
+    #     EX: <test-element>
+    #           <test-element>
+    #           </test-element>
+    #         </test-element>
+    'web_component': r'^(<([a-zA-Z]+-[a-zA-Z]+)(.|[\n\r])*?(?<!=)>[\n\r]?(.|[\n\r])*</([a-zA-Z]+-[a-zA-Z]+)>[\n\r]?)$',
+
+    'web_component_self_closing': r'',
 }
 
 

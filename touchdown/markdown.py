@@ -44,7 +44,7 @@ class Markdown:
             raise StopIteration
 
         self._lineno += 1
-        self._parse(line)
+        return self._parse(line)
 
     @property
     def markdown(self):
@@ -311,24 +311,27 @@ class Markdown:
     def _parse_web_component(self, reader):
         reader.backstep()
 
-        # find open tag
         tag = None
         match = None
         builder = StringBuilder()
-        pdb.set_trace()
         while (line := next(reader, None)):
+            if line is None:
+                raise MarkdownSyntaxError(self._filepath, self._lineno, '')
+
             builder.write(line)
             if re.match(MARKDOWN_REGEXS['web_component'], builder.getvalue()):
-                pass
-
-        # TODO: find close tag
+                match = re.findall(MARKDOWN_REGEXS['web_component'], builder.getvalue())[0]
+                content = match[0]
+                tag = match[1]
+                break
 
         return {
             'page_tag': 'body',
             'type': 'web_component',
-            'tag': None,
-            'content': '',
+            'tag': tag,
+            'content': content,
         }
+
 
     def _parse_image(self, line):
         match = re.findall(MARKDOWN_REGEXS['image'], line)
