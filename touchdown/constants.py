@@ -40,7 +40,13 @@ MARKDOWN_REGEXS = {
     # 1. import '<FILE>'             can be used for JS and CSS
     # 2. defer import '<FILE>'       can be used for JS and CSS
     # 3. async import '<FILE>'       can be used for JS
-    'import': r"(?:(async)?[^\S\r\n]+)?(?:(defer)?[^\S\r\n]+)?import '([A-Za-z0-9-._~:/\?\#\[\]@!\$,&'\(\)\*\+,;%=]+)'[\n\r]*?"
+    # 4. async defer import <FILE>   cannot be used at all - invalid syntax
+    'import': r"(?:(async)?[^\S\r\n]+)?(?:(defer)?[^\S\r\n]+)?import '([A-Za-z0-9-._~:/\?\#\[\]@!\$,&'\(\)\*\+,;%=]+)'[\n\r]*?",
+
+    # NOTE: this regex does not work on debuggex
+    # this regex captures any valid web-component open tag. close tags
+    # are processed afterwards
+    'web_component': r'<([a-zA-Z]+-[a-zA-Z]+)(.|[\n\r])*?(?<!=| )>[\n\r]?'
 }
 
 

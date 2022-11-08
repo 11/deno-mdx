@@ -43,29 +43,7 @@ class Markdown:
             raise StopIteration
 
         self._lineno += 1
-
-        if re.match(MARKDOWN_REGEXS['header_id'], line):
-            return self._parse_header(line, includes_id=True)
-        elif re.match(MARKDOWN_REGEXS['header'], line):
-            return self._parse_header(line)
-        elif re.match(MARKDOWN_REGEXS['blockquote'], line):
-            return self._parse_blockquote(line)
-        elif re.match(MARKDOWN_REGEXS['ordered_list'], line):
-            return self._parse_ordered_list(self._reader)
-        elif re.match(MARKDOWN_REGEXS['unordered_list'], line):
-            return self._parse_unordered_list(self._reader)
-        elif re.match(MARKDOWN_REGEXS['image'], line):
-            return self._parse_image(line)
-        elif re.match(MARKDOWN_REGEXS['codeblock_header'], line):
-            return self._parse_codeblock(self._reader)
-        elif re.match(MARKDOWN_REGEXS['mathblock'], line):
-            return self._parse_mathblock(self._reader)
-        elif re.match(MARKDOWN_REGEXS['import'], line):
-            return self._parse_import(line)
-        elif re.match(MARKDOWN_REGEXS['paragraph_id'], line):
-            return self._parse_paragraph(line, includes_id=True)
-        else:
-            return self._parse_paragraph(line)
+        self._parse(line)
 
     @property
     def markdown(self):
@@ -87,6 +65,32 @@ class Markdown:
             'body': body if len(body) > 0 else None,
         }
 
+    def _parse(self, line):
+        if re.match(MARKDOWN_REGEXS['header_id'], line):
+            return self._parse_header(line, includes_id=True)
+        elif re.match(MARKDOWN_REGEXS['header'], line):
+            return self._parse_header(line)
+        elif re.match(MARKDOWN_REGEXS['blockquote'], line):
+            return self._parse_blockquote(line)
+        elif re.match(MARKDOWN_REGEXS['ordered_list'], line):
+            return self._parse_ordered_list(self._reader)
+        elif re.match(MARKDOWN_REGEXS['unordered_list'], line):
+            return self._parse_unordered_list(self._reader)
+        elif re.match(MARKDOWN_REGEXS['image'], line):
+            return self._parse_image(line)
+        elif re.match(MARKDOWN_REGEXS['codeblock_header'], line):
+            return self._parse_codeblock(self._reader)
+        elif re.match(MARKDOWN_REGEXS['mathblock'], line):
+            return self._parse_mathblock(self._reader)
+        elif re.match(MARKDOWN_REGEXS['import'], line):
+            return self._parse_import(line)
+        elif re.match(MARKDOWN_REGEXS['paragraph_id'], line):
+            return self._parse_paragraph(line, includes_id=True)
+        elif line[0] == '<':
+            return self._parse_web_component(line, reader)
+        else:
+            return self._parse_paragraph(line)
+
     def _parse_header(self, line, includes_id=False):
         match = re.findall(MARKDOWN_REGEXS['header_id'], line) \
             if includes_id \
@@ -104,11 +108,11 @@ class Markdown:
         header = match[0][0]
         text_token = self._parse_text(match[0][-1])
 
-        # need to join all the actual text in the header node 
+        # need to join all the actual text in the header node
         # before generating an ID
         header_id_text = ''.join([
             token['content']
-            for token in text_token['content'] 
+            for token in text_token['content']
         ])
         header_id = create_html_tag_id(header_id_text)
 
@@ -185,8 +189,8 @@ class Markdown:
 
         # Check for syntax errors
         # 1. check that the import statement is correctly formatted
-        # 2 & 3. an import statement can only include `defer` OR `async, NOT BOTH 
-        # the last 2 checks ensure that the import statement is not `defer async import ...` 
+        # 2 & 3. an import statement can only include `defer` OR `async, NOT BOTH
+        # the last 2 checks ensure that the import statement is not `defer async import ...`
         match = re.findall(MARKDOWN_REGEXS['import'], line)
         if len(match) != 1:
             raise MarkdownSyntaxError(self._filepath, self._lineno, '')
@@ -303,6 +307,23 @@ class Markdown:
     def _parse_unordered_list(self, reader):
         return self._parse_list(reader, 'unordered_list', 'ul')
 
+    def _parse_web_component(self, reader):
+        reader.backstep()
+        output = {
+            'page_tag': 'body'
+            'type': 'web_component',
+            'tag': None,
+            'content': ''
+        }
+
+        # find open tag
+        while (line := next(reader, None)):
+            pass
+
+        # find close tag
+
+        return output
+
     def _parse_image(self, line):
         match = re.findall(MARKDOWN_REGEXS['image'], line)
         if len(match) != 1:
@@ -338,7 +359,7 @@ class Markdown:
         content = []
         idx = 0
         while idx < len(maths):
-            curr = maths[idx] 
+            curr = maths[idx]
             curr['content'] = f'\\({curr["content"]}\\)'
 
             start = None
@@ -355,7 +376,7 @@ class Markdown:
             content.append(curr)
             idx += 1
 
-        # after parsing all the math blocks, we need to append any lingering 
+        # after parsing all the math blocks, we need to append any lingering
         # text that might come afterwards
         last_text = line[content[-1]['end']:]
         content.append(last_text)
@@ -479,8 +500,8 @@ class Markdown:
             idx += 1
 
             if not (idx < len(line) and len(active) > 0):
-                # this loop HAS to run 1 extra iteration to know that we've reached the end 
-                # of the line, or to process any unclosed special characters. because of 
+                # this loop HAS to run 1 extra iteration to know that we've reached the end
+                # of the line, or to process any unclosed special characters. because of
                 # this, we subtract 1 to return the correct index to seek to in `_parse_text`
                 idx -= 1
 
@@ -550,7 +571,7 @@ class Markdown:
         math_text = []
         for token in math:
             if type(token) == str:
-                math_text += self._parse_characters(token) 
+                math_text += self._parse_characters(token)
             else:
                 # NOTE: we delete these unnecessary `start` and `end nodes
                 # because they were requied through-out all of the `_parse_maths`
