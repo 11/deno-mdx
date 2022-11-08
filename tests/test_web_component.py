@@ -168,15 +168,15 @@ class TestWebComponent(unittest.TestCase):
     def test_web_component_with_data_attribute_html(self):
         test_file = f'{TESTCASE_DIR}/test_web_component_with_data_attribute.md'
         expected_html = \
-        "<!DOCTYPE html>\n" \
-        "<html>\n" \
-        "<body>\n" \
-        "<test-element\n" \
-        "  data-message='hello world'\n" \
-        "  data-color='rgba(100,100,100,.8)'\n" \
-        "></test-element>\n" \
-        "</body>\n" \
-        "</html>"
+            "<!DOCTYPE html>\n" \
+            "<html>\n" \
+            "<body>\n" \
+            "<test-element\n" \
+            "  data-message='hello world'\n" \
+            "  data-color='rgba(100,100,100,.8)'\n" \
+            "></test-element>\n" \
+            "</body>\n" \
+            "</html>"
         assert to_html(test_file) == expected_html
 
     def test_web_component_with_function_attribute_markdown(self):
