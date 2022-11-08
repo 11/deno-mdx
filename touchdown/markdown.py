@@ -313,12 +313,18 @@ class Markdown:
 
         tag = None
         content = None
+        self_closing = False
         builder = StringBuilder()
         while (line := next(reader, None)):
-
             builder.write(line)
             if re.match(MARKDOWN_REGEXS['web_component'], builder.getvalue()):
                 match = re.findall(MARKDOWN_REGEXS['web_component'], builder.getvalue())[0]
+                content = match[0]
+                tag = match[1]
+                break
+            elif re.match(MARKDOWN_REGEXS['web_component_self_closing'], builder.getvalue()):
+                match = re.findall(MARKDOWN_REGEXS['web_component_self_closing'], builder.getvalue())[0]
+                self_closing = True
                 content = match[0]
                 tag = match[1]
                 break
@@ -330,9 +336,9 @@ class Markdown:
             'page_tag': 'body',
             'type': 'web_component',
             'tag': tag,
+            'self_closing': self_closing,
             'content': content,
         }
-
 
     def _parse_image(self, line):
         match = re.findall(MARKDOWN_REGEXS['image'], line)

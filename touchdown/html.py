@@ -233,4 +233,10 @@ class Html:
         for line in token['content'].split('\n'):
             builder.write(f'{line}\n')
 
+        if token['self_closing']:
+            self_closing_tag = builder.getvalue().rstrip()
+            open_tag = f'{self_closing_tag[:len(self_closing_tag) - 2]}>'
+            close_tag = f'</{token["tag"]}>'
+            return f'{open_tag}{close_tag}'
+
         return builder.getvalue().rstrip()
