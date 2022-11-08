@@ -1,4 +1,5 @@
 import json
+from io import StringIO as StringBuilder
 
 
 class Html:
@@ -228,4 +229,8 @@ class Html:
         return f'{open_tags}<a href="{href}">{content}</a>{close_tags}'
 
     def _write_web_component(self, token):
-        return f'\t{token["content"]}'
+        builder = StringBuilder()
+        for line in token['content'].split('\n'):
+            builder.write(f'{line}\n')
+
+        return builder.getvalue().rstrip()

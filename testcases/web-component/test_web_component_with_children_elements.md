@@ -1,5 +1,5 @@
 <test-element>
     <div>
         <p>Hello world</p>
-    </div> 
+    </div>
 </test-element>

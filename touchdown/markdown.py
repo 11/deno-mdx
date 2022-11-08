@@ -312,11 +312,9 @@ class Markdown:
         reader.backstep()
 
         tag = None
-        match = None
+        content = None
         builder = StringBuilder()
         while (line := next(reader, None)):
-            if line is None:
-                raise MarkdownSyntaxError(self._filepath, self._lineno, '')
 
             builder.write(line)
             if re.match(MARKDOWN_REGEXS['web_component'], builder.getvalue()):
@@ -324,6 +322,9 @@ class Markdown:
                 content = match[0]
                 tag = match[1]
                 break
+
+        if content is None:
+            raise MarkdownSyntaxError(self._filepath, self._lineno, 'Could not find closing tag to web component')
 
         return {
             'page_tag': 'body',
