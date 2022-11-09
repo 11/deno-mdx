@@ -1,4 +1,5 @@
 import json
+from io import StringIO as StringBuilder
 
 
 class Html:
@@ -89,6 +90,8 @@ class Html:
             return self._write_codeblock(token)
         elif token['type'] == 'mathblock':
             return self._write_mathblock(token)
+        elif token['type'] == 'web_component':
+            return self._write_web_component(token)
         elif token['type'] == 'import' and token['tag'] == 'script':
             return self._write_script(token)
         elif token['type'] == 'import' and token['tag'] == 'link':
@@ -224,3 +227,16 @@ class Html:
             else token['href']
 
         return f'{open_tags}<a href="{href}">{content}</a>{close_tags}'
+
+    def _write_web_component(self, token):
+        builder = StringBuilder()
+        for line in token['content'].split('\n'):
+            builder.write(f'{line}\n')
+
+        if token['self_closing']:
+            self_closing_tag = builder.getvalue().rstrip()
+            open_tag = f'{self_closing_tag[:len(self_closing_tag) - 2]}>'
+            close_tag = f'</{token["tag"]}>'
+            return f'{open_tag}{close_tag}'
+
+        return builder.getvalue().rstrip()
