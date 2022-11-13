@@ -45,13 +45,14 @@ class Html:
 
         imports = None
         if self._md_tokens['head'] is not None:
-            imports: [
+            imports = [
                 f'import {token["src"]}' \
                 for token in self._md_tokens['head'] \
                 if token is not None \
                     and token['tag'] == 'script' \
-                    and not token['is_url']
+                    and not token['url']
             ]
+
 
         return {
             'filename': filename,
