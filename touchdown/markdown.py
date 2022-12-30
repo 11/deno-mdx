@@ -71,7 +71,7 @@ class Markdown:
         elif re.match(MARKDOWN_REGEXS['header'], line):
             return self._parse_header(line)
         elif re.match(MARKDOWN_REGEXS['blockquote'], line):
-            return self._parse_blockquote(line)
+            return self._parse_blockquote(self._reader)
         elif re.match(MARKDOWN_REGEXS['ordered_list'], line):
             return self._parse_ordered_list(self._reader)
         elif re.match(MARKDOWN_REGEXS['unordered_list'], line):
@@ -124,17 +124,24 @@ class Markdown:
             'content': text_token,
         }
 
-    def _parse_blockquote(self, line):
-        match = re.findall(MARKDOWN_REGEXS['blockquote'], line)
-        if len(match) != 1:
-            raise MarkdownSyntaxError(self._filepath, self._lineno, '')
+    def _parse_blockquote(self, reader):
+        reader.backstep()
 
-        content = match[0]
+        content = []
+        while (line := next(reader, None)):
+            match = re.findall(MARKDOWN_REGEXS['blockquote'], line)
+            if not match:
+                break
+            else:
+                text = match[0]
+                content.append(text)
+
+        blockquote = ' '.join(content).strip()
         return {
             'page_tag': 'body',
             'type': 'blockquote',
             'tag': 'blockquote',
-            'content': self._parse_text(content),
+            'content': self._parse_text(blockquote),
         }
 
     def _parse_mathblock(self, reader):
