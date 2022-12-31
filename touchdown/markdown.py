@@ -187,13 +187,6 @@ class Markdown:
         }
 
     def _parse_import(self, line):
-        if self._filepath.suffix == '.md':
-            raise MarkdownSyntaxError(
-                self._filepath,
-                self._lineno,
-                f'Trying to use `import` statement inside file with `.md` extension - try changing `{self._filepath}` extension to `.mdx`'
-            )
-
         # Check for syntax errors
         # 1. check that the import statement is correctly formatted
         # 2 & 3. an import statement can only include `defer` OR `async, NOT BOTH
