@@ -9,7 +9,7 @@ def lookahead(pattern, substr):
 
           the double backslash before the * is escaping the backslash
           character, NOT the * character. in the current implementation
-          this would incorrectly assum the * character is being escaped.
+          this would incorrectly assume the * character is being escaped.
           this edge case is pretty rare and can mostly be ignored - but
           should eventually be resolved later
     """
@@ -53,7 +53,6 @@ def map_decorations_to_tokens(decorations: set):
     # to ensure that decorations are applied in a the same order
     # each time we sort the set of decorations
     decorations = sorted(decorations)
-
 
     return {
         'token': [decors_token_map[decor] for decor in decorations],

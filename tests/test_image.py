@@ -103,7 +103,6 @@ class TestImage(unittest.TestCase):
             "body": [{"alt": "alt text", "tag": "img", "type": "image", "uri": ""}],
             "filename": "test_image_with_no_uri.md",
         }
-        pprint(to_ast(test_file))
         assert to_ast(test_file) == expected_markdown
 
     def test_image_with_local_no_uri_html(self):

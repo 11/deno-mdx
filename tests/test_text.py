@@ -9,8 +9,116 @@ TESTCASE_DIR = './testcases/text'
 
 
 class TestText(unittest.TestCase):
+    def test_escape_special_characters_markdown(self):
+        """ testing that escaped special characters are properly escaped in output text """
+        test_file = Path(f'{TESTCASE_DIR}/test_escape_special_characters.md')
+        expected_markdown = {
+            "head": None,
+            "body": [
+                {
+                    "content": [
+                        {
+                            "content": [
+                                {
+                                    "content": "_should not be italic_\n",
+                                    "tag": None,
+                                    "type": None,
+                                }
+                            ],
+                            "type": "text",
+                        }
+                    ],
+                    "id": None,
+                    "tag": "p",
+                    "type": "paragraph",
+                },
+                {
+                    "content": [
+                        {
+                            "content": [
+                                {"content": "should *not be bold*\n", "tag": None, "type": None}
+                            ],
+                            "type": "text",
+                        }
+                    ],
+                    "id": None,
+                    "tag": "p",
+                    "type": "paragraph",
+                },
+                {
+                    "content": [
+                        {
+                            "content": [
+                                {
+                                    "content": "should ~not be~ " "strikethrough\n",
+                                    "tag": None,
+                                    "type": None,
+                                }
+                            ],
+                            "type": "text",
+                        }
+                    ],
+                    "id": None,
+                    "tag": "p",
+                    "type": "paragraph",
+                },
+                {
+                    "content": [
+                        {
+                            "content": [
+                                {"content": "`should not be` code\n", "tag": None, "type": None}
+                            ],
+                            "type": "text",
+                        }
+                    ],
+                    "id": None,
+                    "tag": "p",
+                    "type": "paragraph",
+                },
+                {
+                    "content": [
+                        {
+                            "content": [
+                                {"content": "n factorial is ", "tag": None, "type": None},
+                                {
+                                    "content": "n * n-1 * n-2 * n-3 ... 1",
+                                    "tag": ["code"],
+                                    "token": ["code"],
+                                    "type": "text",
+                                },
+                                {"content": "\n", "tag": None, "type": None},
+                            ],
+                            "type": "text",
+                        }
+                    ],
+                    "id": None,
+                    "tag": "p",
+                    "type": "paragraph",
+                },
+            ],
+            "filename": "test_escape_special_characters.md",
+        }
+        assert to_ast(test_file) == expected_markdown
+
+    def test_escape_special_characters_html(self):
+        """ testing that escaped special characters are properly escaped in output text """
+
+        test_file = Path(f'{TESTCASE_DIR}/test_escape_special_characters.md')
+        expected_html = \
+            '<!DOCTYPE html>\n' \
+            '<html>\n' \
+            '<body>\n' \
+            '<p>_should not be italic_</p>\n' \
+            '<p>should *not be bold*</p>\n' \
+            '<p>should ~not be~ strikethrough</p>\n' \
+            '<p>`should not be` code</p>\n' \
+            '<p>n factorial is <code>n * n-1 * n-2 * n-3 ... 1</code></p>\n' \
+            '</body>\n' \
+            '</html>'
+        assert to_html(test_file) == expected_html
+
     def test_formatted_text_nonoverlap_markdown(self):
-        """ testign text with non-overlapping tags """
+        """ testing text with non-overlapping tags """
 
         test_file = Path(f'{TESTCASE_DIR}/test_formatted_text_nonoverlap.md')
         expected_markdown = {

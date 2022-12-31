@@ -502,14 +502,21 @@ class Markdown:
         builder = StringBuilder()
         idx = seek
         while True:
-            lag = line[idx-1] if idx > 0 else ''
             char = line[idx]
+            peek = line[idx + 1] \
+                if (idx + 1) < len(line) \
+                else None
 
-            if lag != '\\' and char in SPECIAL_CHARS:
+            if char == '\\' and peek in SPECIAL_CHARS:
+                builder.write(peek)
+                idx += 2
+                continue
+            elif char in SPECIAL_CHARS:
                 block = { 'type': 'text', 'content': builder.getvalue() }
                 block.update(map_decorations_to_tokens(active))
                 decorations.append(block)
                 builder.close()
+
                 builder = StringBuilder()
 
                 if char not in active:
@@ -542,8 +549,11 @@ class Markdown:
         content = []
         idx = 0
         while idx < len(line):
-            lag = line[idx-1] if idx > 0 else ''
             char = line[idx]
+            peek = line[idx + 1] \
+                if (idx + 1) < len(line) \
+                else None
+            rest = line[idx+1:]
 
             if idx == len(line) - 1:
                 # if the loop is on its last iteration, append the last text
@@ -555,11 +565,15 @@ class Markdown:
                     'content': builder.getvalue()
                 })
                 builder.close()
-            elif char in SPECIAL_CHARS and lag != '\\' and lookahead(char, line[idx+1:]) == False:
+            elif char == '\\' and peek in SPECIAL_CHARS:
+                builder.write(peek)
+                idx += 2
+                continue
+            elif char in SPECIAL_CHARS and lookahead(char, rest) == False:
                 # if a special character is found but there is no closing special
                 # character, stop parsing and print a MarkdownSyntaxError
                 raise MarkdownSyntaxError(self._filepath, self._lineno, f'`{char}` needs a matching closing character')
-            elif char in SPECIAL_CHARS and lag != '\\' and lookahead(char, line[idx+1:]):
+            elif char in SPECIAL_CHARS and lookahead(char, rest):
                 # if reading a special character that isn't escaped and
                 # the rest of the string contains a closing character,
                 # start parsing deocrations
@@ -572,7 +586,7 @@ class Markdown:
                 builder = StringBuilder()
 
                 # `decorations` is a list of decoration text nodes to append to the output
-                # `seek` is the index that `idx` should jump forward to
+                # `seek` is the index in `line` that `idx` should jump forward to
                 decorations, seek = self._parse_decoration(line, seek=idx)
                 content += decorations
                 idx = seek
